@@ -3075,7 +3075,11 @@ void getDefaultSSID(int wlanIndex, char *DefaultSSID)
 }
 
 #if defined(_LG_OFW_)
+#if defined _PUMA6_ATOM_
 #define RANDOM_COUNT 14
+#else
+#define RANDOM_COUNT 16
+#endif
 /*
         Generate Random Default Guest wifi password
         Very Strong password complies with one of the following 2 rule sets:
