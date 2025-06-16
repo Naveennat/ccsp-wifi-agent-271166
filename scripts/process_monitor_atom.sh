@@ -253,6 +253,12 @@ interface=1
 	fi
       fi
 
+      if [ "$(rpcclient2 'syscfg get skenable' | tail -n 2 | head -n 1)" = "1" ]; then
+          if [ -z "$(busybox pidof skagent)" ]; then
+              echo_t "SK NOT running, but SK is enabled" >> /rdklogs/logs/third_party_agent_logs.txt
+          fi
+      fi
+
  	if [ -f /lib/rdk/wifi_config_profile_check.sh ];then
 		source /lib/rdk/wifi_config_profile_check.sh 
                 rc=$?
