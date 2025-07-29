@@ -49,7 +49,7 @@
 #include "cosa_wifi_passpoint.h"
 #include "safec_lib_common.h"
 #include "ccsp_WifiLog_wrapper.h"
-
+#include "secure_wrapper.h"
 
 #if defined (FEATURE_CSI)
 #include <netinet/tcp.h>    //Provides declarations for tcp header
