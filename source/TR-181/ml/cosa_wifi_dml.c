@@ -336,10 +336,9 @@ static BOOL IsSsidHotspot(ULONG ins)
     char *sval = NULL;
     BOOL bval;
     extern ANSC_HANDLE bus_handle;
-    extern char        g_Subsystem[32];
 
     snprintf(rec, sizeof(rec), "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.AccessPoint.%d.HotSpot", (int)ins);
-    if (PSM_Get_Record_Value2(bus_handle, g_Subsystem, rec, NULL, &sval) != CCSP_SUCCESS) {
+    if (PSM_Get_Record_Value2(bus_handle, NULL, rec, NULL, &sval) != CCSP_SUCCESS) {
         AnscTraceError(("%s: fail to get PSM record !\n", __FUNCTION__));
         return FALSE;
     }
@@ -355,7 +354,6 @@ BOOL UpdateCircuitId()
 	parameterValStruct_t    **valStructs = NULL;
 	char                    *paramNameList[1];
 	extern ANSC_HANDLE bus_handle;
-    extern char        g_Subsystem[32];
 	int                     valNum = 0;
 	sleep(7);
 
@@ -2743,7 +2741,7 @@ Radio_GetParamUlongValue
 #if defined (FEATURE_OFF_CHANNEL_SCAN_5G)
         char *ChannelTscan = "Device.WiFi.Radio.2.Radio_X_RDK_OffChannelTscan", *strValue = NULL;
 
-        if (PSM_Get_Record_Value2(bus_handle, g_Subsystem, ChannelTscan, NULL, &strValue) != CCSP_SUCCESS)
+        if (PSM_Get_Record_Value2(bus_handle, NULL, ChannelTscan, NULL, &strValue) != CCSP_SUCCESS)
         {
             CcspTraceError(("%s: fail to get PSM record for %s!\n", __FUNCTION__, ChannelTscan));
              return FALSE;
@@ -2766,7 +2764,7 @@ Radio_GetParamUlongValue
         char *ChannelNscan = "Device.WiFi.Radio.2.Radio_X_RDK_OffChannelNscan", *strValue = NULL;
         ULONG utmpValue = 0;
 
-        if (PSM_Get_Record_Value2(bus_handle, g_Subsystem, ChannelNscan, NULL, &strValue) != CCSP_SUCCESS)
+        if (PSM_Get_Record_Value2(bus_handle, NULL, ChannelNscan, NULL, &strValue) != CCSP_SUCCESS)
         {
             CcspTraceError(("%s: fail to get PSM record for %s!\n", __FUNCTION__, ChannelNscan));
             return FALSE;
@@ -2791,7 +2789,7 @@ Radio_GetParamUlongValue
       char *RFC_OffScan= "Device.DeviceInfo.X_RDK_RFC.Feature.OffChannelScan.Enable";
 
       //Check if RFC OffChannelScan is present in PSM
-      if(PSM_Get_Record_Value2(bus_handle,g_Subsystem, RFC_OffScan, NULL, &strValue) != CCSP_SUCCESS)
+      if(PSM_Get_Record_Value2(bus_handle, NULL, RFC_OffScan, NULL, &strValue) != CCSP_SUCCESS)
       {
         CcspTraceError(("%s: fail to get PSM record for %s!\n", __FUNCTION__, RFC_OffScan));
         return TRUE;
@@ -2806,7 +2804,7 @@ Radio_GetParamUlongValue
       else
       {
         //If ChannelNchannel record is not present in PSM, set its value as 0
-        if (PSM_Get_Record_Value2(bus_handle, g_Subsystem, ChannelNchannel, NULL, &strValue) != CCSP_SUCCESS)
+        if (PSM_Get_Record_Value2(bus_handle, NULL, ChannelNchannel, NULL, &strValue) != CCSP_SUCCESS)
         {
           *puLong = 0;
           CcspTraceError(("%s: fail to get PSM record for %s!\n", __FUNCTION__, ChannelNchannel));
@@ -2828,7 +2826,7 @@ Radio_GetParamUlongValue
 #if defined (FEATURE_OFF_CHANNEL_SCAN_5G)
         char *ChannelTidle = "Device.WiFi.Radio.2.Radio_X_RDK_OffChannelTidle", *strValue = NULL;
 
-        if (PSM_Get_Record_Value2(bus_handle, g_Subsystem, ChannelTidle, NULL, &strValue) != CCSP_SUCCESS)
+        if (PSM_Get_Record_Value2(bus_handle, NULL, ChannelTidle, NULL, &strValue) != CCSP_SUCCESS)
         {
             AnscTraceError(("%s: fail to get PSM record for %s!\n", __FUNCTION__, ChannelTidle));
             return FALSE;
@@ -9866,7 +9864,7 @@ AccessPoint_GetParamStringValue
 
         snprintf(strName, sizeof(strName), PATH_X_LGI_COM_ACTIVETIMEOUT, pLinkObj->InstanceNumber);
 
-        if( CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, g_Subsystem, strName, NULL, &strValue))
+        if( CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, strName, NULL, &strValue))
         {
             if (AnscSizeOfString(strValue) < *pUlSize)
             {
@@ -10186,7 +10184,7 @@ AccessPoint_SetParamBoolValue
 	char *strValue = NULL;
 	int retPsmGet = CCSP_SUCCESS;
 
-	retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Interworking.Enable", NULL, &strValue);
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Interworking.Enable", NULL, &strValue);
 	if (retPsmGet != CCSP_SUCCESS) {
 
 	    CcspTraceError(("PSM RFC Interworking read error !!!\n"));
@@ -10320,7 +10318,7 @@ AccessPoint_SetParamBoolValue
                 tmpBuf[size] = '\0';
             }
             
-            retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, "dmsb.device.deviceinfo.X_RDKCENTRAL-COM_WHIX.RxRetryList", ccsp_string, tmpBuf);
+            retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, "dmsb.device.deviceinfo.X_RDKCENTRAL-COM_WHIX.RxRetryList", ccsp_string, tmpBuf);
             if (retPsmSet != CCSP_SUCCESS) {
               CcspTraceError(("%s PSM_Set_Record_Value2 returned error %d while setting WHIX.RxRetryList \n",__FUNCTION__, retPsmSet));
             }
@@ -10837,7 +10835,7 @@ AccessPoint_SetParamStringValue
 
         snprintf(strCmd, sizeof(strCmd), PATH_X_LGI_COM_ACTIVETIMEOUT, indx);
 
-        if (CCSP_SUCCESS != PSM_Set_Record_Value2(bus_handle, g_Subsystem, strCmd, ccsp_string, pString))
+        if (CCSP_SUCCESS != PSM_Set_Record_Value2(bus_handle, NULL, strCmd, ccsp_string, pString))
         {
             CcspTraceError(("PSM_Set_Record_Value2 failed to set %s\n", strCmd));
             return FALSE;
@@ -18734,7 +18732,7 @@ DPP_STA_SetParamBoolValue
     char *recName = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.EasyConnect.Enable";
     char* strValue = NULL;
 
-    if(PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue) != CCSP_SUCCESS) {
+    if(PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue) != CCSP_SUCCESS) {
         wifi_dpp_dml_dbg_print(1, "%s: fail to get PSM record for RFC EasyConnect\n", __func__);
         CcspTraceError(("%s: fail to get PSM record for RFC EasyConnect\n",__func__));
     }
@@ -21792,7 +21790,6 @@ BOOL IsMacDuplicate(int nextInstNum, ULONG wifiAPInst, ULONG macFiltInst, char *
     }
 
   extern ANSC_HANDLE bus_handle;
-  extern char g_Subsystem[32];
 
     for (host=0; host<nextInstNum; host++)
     {
@@ -21801,7 +21798,7 @@ BOOL IsMacDuplicate(int nextInstNum, ULONG wifiAPInst, ULONG macFiltInst, char *
       {
             char *buf=NULL, entry[128]={'\0'};
             snprintf(entry,sizeof(entry), MacFilter, (int)wifiAPInst, (int)pMacFilt->InstanceNumber);
-            int retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, entry, NULL, &buf);
+            int retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, entry, NULL, &buf);
             if (retPsmGet == CCSP_SUCCESS)
             {
                 if (!strcmp(buf, MACAddress))
@@ -21838,12 +21835,11 @@ MacFiltTab_Validate
     char *strValue = NULL;
     char *str = NULL;
     extern ANSC_HANDLE bus_handle;
-    extern char g_Subsystem[32];
     int nextInstNum = 0;
     memset(recName, 0, sizeof(recName));
 
     sprintf(recName, MacFilterList2, (int)pWiFiAP->Cfg.InstanceNumber);
-    int retPsmGet = PSM_Get_Record_Value2(bus_handle, g_Subsystem, recName, NULL, &strValue);
+    int retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS)
     {
        str = strtok(strValue,":");
@@ -24359,7 +24355,7 @@ Passpoint_GetParamBoolValue
     char *strValue = NULL;
     
     //Check RFC value
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Passpoint.Enable", NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Passpoint.Enable", NULL, &strValue);
 
     if (strcmp(ParamName, "Capability") == 0) {
         pWifiAp->AP.Cfg.IEEE80211uCfg.PasspointCfg.Capability = false;
@@ -24555,7 +24551,7 @@ Passpoint_SetParamBoolValue
             return TRUE;
         }
 
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Passpoint.Enable", NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Passpoint.Enable", NULL, &strValue);
         if ((retPsmGet != CCSP_SUCCESS) || (false == _ansc_atoi(strValue)) || (FALSE == _ansc_atoi(strValue))){
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
             CcspTraceWarning(("Cannot Enable Passpoint. RFC Disabled\n"));

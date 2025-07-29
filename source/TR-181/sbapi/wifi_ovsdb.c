@@ -65,7 +65,6 @@ int wifidb_wfd = 0;
 
 #define WIFI_MAX_VAP 16
 extern ANSC_HANDLE bus_handle;
-extern char   g_Subsystem[32];
 extern PCOSA_BACKEND_MANAGER_OBJECT g_pCosaBEManager;
 
 #ifdef WIFI_HAL_VERSION_3
@@ -1465,7 +1464,7 @@ int wifi_db_update_global_config()
     char *str_val = NULL;
 
     memset(&cfg,0,sizeof(cfg));
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.Device.WiFi.NotifyWiFiChanges" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.Device.WiFi.NotifyWiFiChanges" , NULL, &str_val);
     if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
         if (strncmp(str_val,"true",strlen("true")) == 0) {
             cfg.notify_wifi_changes = true;
@@ -1476,25 +1475,25 @@ int wifi_db_update_global_config()
         
     }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.PreferPrivate" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.PreferPrivate" , NULL, &str_val);
     if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
         cfg.prefer_private = _ansc_atoi(str_val);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
     }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.PreferPrivateConfigure", NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.PreferPrivateConfigure", NULL, &str_val);
     if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
         cfg.prefer_private_configure = _ansc_atoi(str_val);
        ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
     }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.FactoryReset" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.FactoryReset" , NULL, &str_val);
     if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
         cfg.factory_reset = _ansc_atoi(str_val);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
     }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.TxOverflowSelfheal" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.TxOverflowSelfheal" , NULL, &str_val);
     if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
         if ((strncmp(str_val,"true",strlen("true")) == 0) || (strncmp(str_val,"TRUE",strlen("TRUE")) == 0 )) {
             cfg.tx_overflow_selfheal = true;
@@ -1504,55 +1503,55 @@ int wifi_db_update_global_config()
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
     }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.Device.WiFi.VlanCfgVerion" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.Device.WiFi.VlanCfgVerion" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.vlan_cfg_version = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.Device.WiFi.WPSPin" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.Device.WiFi.WPSPin" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             strncpy(cfg.wps_pin, str_val,sizeof(cfg.wps_pin)-1);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.Device.WiFi.X_RDKCENTRAL-COM_BandSteering.Enable" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.Device.WiFi.X_RDKCENTRAL-COM_BandSteering.Enable" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.bandsteering_enable = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDKCENTRAL-COM_GoodRssiThreshold" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDKCENTRAL-COM_GoodRssiThreshold" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.good_rssi_threshold = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDKCENTRAL-COM_AssocCountThreshold" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDKCENTRAL-COM_AssocCountThreshold" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.assoc_count_threshold = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDKCENTRAL-COM_AssocGateTime" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDKCENTRAL-COM_AssocGateTime" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.assoc_gate_time = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDKCENTRAL-COM_AssocMonitorDuration" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDKCENTRAL-COM_AssocMonitorDuration" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.assoc_monitor_duration = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDKCENTRAL-COM_RapidReconnectIndicationEnable" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDKCENTRAL-COM_RapidReconnectIndicationEnable" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.rapid_reconnect_enable = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.vAPStatsEnable" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.vAPStatsEnable" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             if (strncmp(str_val,"true",strlen("true")) == 0) {
             cfg.vap_stats_feature = true;
@@ -1563,13 +1562,13 @@ int wifi_db_update_global_config()
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.FeatureMFPConfig" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.FeatureMFPConfig" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.mfp_config_feature = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDK-CENTRAL_COM_ForceDisable" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDK-CENTRAL_COM_ForceDisable" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             if ((strncmp(str_val,"true",strlen("true")) == 0) || (strncmp(str_val,"TRUE",strlen("TRUE")) == 0 )) {
                 cfg.force_disable_radio_feature = true;
@@ -1579,79 +1578,79 @@ int wifi_db_update_global_config()
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDK-CENTRAL_COM_ForceDisable_RadioStatus" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDK-CENTRAL_COM_ForceDisable_RadioStatus" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.force_disable_radio_status = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.FixedWmmParamsValues" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.FixedWmmParamsValues" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.fixed_wmm_params = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDKCENTRAL-COM_Syndication.WiFiRegion.Code" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.X_RDKCENTRAL-COM_Syndication.WiFiRegion.Code" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             strncpy(cfg.wifi_region_code, str_val,sizeof(cfg.wifi_region_code)-1);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
     
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.Device.WiFi.InstWifiClientEnabled" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.Device.WiFi.InstWifiClientEnabled" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.inst_wifi_client_enabled = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
  
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.Device.WiFi.InstWifiClientReportingPeriod" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.Device.WiFi.InstWifiClientReportingPeriod" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.inst_wifi_client_reporting_period = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.Device.WiFi.InstWifiClientMacAddress" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.Device.WiFi.InstWifiClientMacAddress" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             strncpy(cfg.inst_wifi_client_mac,str_val,sizeof(cfg.inst_wifi_client_mac)-1);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.Device.WiFi.InstWifiClientDefReportingPeriod" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.Device.WiFi.InstWifiClientDefReportingPeriod" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.inst_wifi_client_def_reporting_period = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.Device.WiFi.WiFiActiveMsmtEnabled" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.Device.WiFi.WiFiActiveMsmtEnabled" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.wifi_active_msmt_enabled = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.Device.WiFi.WiFiActiveMsmtPktSize" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.Device.WiFi.WiFiActiveMsmtPktSize" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.wifi_active_msmt_pktsize = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.Device.WiFi.WiFiActiveMsmtNumberOfSample" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.Device.WiFi.WiFiActiveMsmtNumberOfSample" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.wifi_active_msmt_num_samples = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.Device.WiFi.WiFiActiveMsmtSampleDuration" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.Device.WiFi.WiFiActiveMsmtSampleDuration" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.wifi_active_msmt_sample_duration = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.Device.WiFi.NeighbouringDiagnosticEnable" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.Device.WiFi.NeighbouringDiagnosticEnable" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.diagnostic_enable = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
         }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,"eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.ValidateSSIDName" , NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "eRT.com.cisco.spvtg.ccsp.tr181pa.Device.WiFi.ValidateSSIDName" , NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             cfg.validate_ssid = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
@@ -1699,7 +1698,7 @@ int wifi_db_update_radio_config()
         {
             ERR_CHK(rc);
         }
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,recName, NULL, &str_val);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             radio_cfg.factoryResetSsid = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
@@ -1710,7 +1709,7 @@ int wifi_db_update_radio_config()
         {
             ERR_CHK(rc);
         }
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,recName, NULL, &str_val);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             radio_cfg.chanUtilThreshold = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
@@ -1721,7 +1720,7 @@ int wifi_db_update_radio_config()
         {
             ERR_CHK(rc);
         }
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,recName, NULL, &str_val);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &str_val);
         if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
             radio_cfg.chanUtilSelfHealEnable = _ansc_atoi(str_val);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
@@ -1829,7 +1828,7 @@ int wifi_db_update_vap_config()
     {
         ERR_CHK(rc);
     }
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,recName, NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &str_val);
     if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
         vap_cfg.u.bss_info.wepKeyLength = _ansc_atoi(str_val);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(str_val);
@@ -1840,7 +1839,7 @@ int wifi_db_update_vap_config()
     {
         ERR_CHK(rc);
     }
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem,recName, NULL, &str_val);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &str_val);
     if ((retPsmGet == CCSP_SUCCESS) && (str_val != NULL)) {
         mf_mode = _ansc_atoi(str_val);
         if (mf_mode == 0) {
@@ -2082,7 +2081,7 @@ int  wifidb_update_wifi_macfilter_config(unsigned int apIndex)
         {
             ERR_CHK(rc);
         }
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL,  recName, NULL, &strValue);
         if (retPsmGet == CCSP_SUCCESS)
         {
             if ((macFilterList = strstr(strValue, ":" )))
@@ -2105,7 +2104,7 @@ int  wifidb_update_wifi_macfilter_config(unsigned int apIndex)
                     cosaApMacFilter.InstanceNumber = _ansc_atoi(macFilterList);
                     memset(recName, 0, sizeof(recName));
                     snprintf(recName, sizeof(recName), MacFilter, cosaApInstance, cosaApMacFilter.InstanceNumber);
-                    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &devMac);
+                    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL,  recName, NULL, &devMac);
                     if (retPsmGet == CCSP_SUCCESS)
                     {
                         rc = sprintf_s(cosaApMacFilter.MACAddress, sizeof(cosaApMacFilter.MACAddress) ,"%s",devMac);
@@ -2122,7 +2121,7 @@ int  wifidb_update_wifi_macfilter_config(unsigned int apIndex)
                         ERR_CHK(rc);
                     }
 
-                    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &devName);
+                    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL,  recName, NULL, &devName);
                     if (retPsmGet == CCSP_SUCCESS)
                     {
                         rc = strcpy_s(cosaApMacFilter.DeviceName, sizeof(cosaApMacFilter.DeviceName), devName);

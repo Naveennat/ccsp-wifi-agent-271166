@@ -41,7 +41,6 @@ static wifi_interworking_t g_interworking_data[16];
 static COSA_DML_WIFI_GASSTATS gasStats[GAS_CFG_TYPE_SUPPORTED];
  
 extern ANSC_HANDLE bus_handle;
-extern char        g_Subsystem[32];
 extern wifi_data_plane_t g_data_plane_module;
 extern PCOSA_BACKEND_MANAGER_OBJECT g_pCosaBEManager;
 
@@ -280,7 +279,7 @@ void process_passpoint_event(cosa_wifi_anqp_context_t *anqpReq)
     gasStats[GAS_CFG_TYPE_SUPPORTED - 1].Queries++;
 
     //Check RFC value. Return NUll is not enabled
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Passpoint.Enable", NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Passpoint.Enable", NULL, &strValue);
     if ((retPsmGet != CCSP_SUCCESS) || (false == _ansc_atoi(strValue))){
         if(strValue) {
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -1137,13 +1136,13 @@ ANSC_STATUS CosaDmlWiFi_SetHS2Config(PCOSA_DML_WIFI_AP_CFG pCfg, char *JSON_STR)
     }
   
     //Fetch RFC values for Interworking and Passpoint
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Interworking.Enable", NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Interworking.Enable", NULL, &strValue);
     if ((retPsmGet == CCSP_SUCCESS) && (strValue)){
         g_interworking_RFC = _ansc_atoi(strValue);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
     }
     
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Passpoint.Enable", NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Passpoint.Enable", NULL, &strValue);
     if ((retPsmGet == CCSP_SUCCESS) && (strValue)){
         g_passpoint_RFC = _ansc_atoi(strValue);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);

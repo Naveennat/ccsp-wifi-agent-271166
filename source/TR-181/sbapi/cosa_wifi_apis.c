@@ -2965,7 +2965,7 @@ void CosaDmlGetNeighbouringDiagnosticEnable(BOOLEAN *DiagEnable)
     if (!g_wifidb_rfc) {
 	char* strValue = NULL;
         /*CID: 71006 Unchecked return value*/
-	if(PSM_Get_Record_Value2(bus_handle,g_Subsystem, DiagnosticEnable, NULL, &strValue) != CCSP_SUCCESS) {
+	if(PSM_Get_Record_Value2(bus_handle, NULL, DiagnosticEnable, NULL, &strValue) != CCSP_SUCCESS) {
            CcspTraceInfo(("PSM DiagnosticEnable read error !!!\n"));
         }
   	
@@ -3003,7 +3003,7 @@ void CosaDmlSetNeighbouringDiagnosticEnable(BOOLEAN DiagEnableVal)
         ERR_CHK(rc);
     }
         /*CID: 62214 Unchecked return value*/
-        if(PSM_Set_Record_Value2(bus_handle,g_Subsystem, DiagnosticEnable, ccsp_string, strValue) != CCSP_SUCCESS)
+        if(PSM_Set_Record_Value2(bus_handle, NULL, DiagnosticEnable, ccsp_string, strValue) != CCSP_SUCCESS)
            CcspTraceInfo(("CosaDmlSetNeighbouringDiagnosticEnable:PSM Read Error !!!\n"));
 
         if (g_wifidb_rfc) {
@@ -3038,7 +3038,7 @@ void getDefaultSSID(int wlanIndex, char *DefaultSSID)
 	// There seemed to be problem getting the SSID and passphrase.  Give it a multiple tries.
 	while ( wlanWaitLimit-- && !strValue )
 	{
-		PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+		PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
 		if (strValue != NULL)
 		{
                     rc = strcpy_s(DefaultSSID,strlen(strValue)+1,strValue);
@@ -3060,7 +3060,7 @@ void getDefaultSSID(int wlanIndex, char *DefaultSSID)
 		printf("Error in getting wifi default SSID name in:%s\n",__FUNCTION__);
 	}
 #else
-	PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+	PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
 	if (strValue != NULL)
 	{
 		rc = strcpy_s(DefaultSSID,strlen(strValue)+1,strValue);
@@ -3169,7 +3169,7 @@ void getDefaultPassphase(int wlanIndex, char *DefaultPassphrase)
     // There seemed to be problem getting the SSID and passphrase.  Give it a multiple tries.
     while ( wlanWaitLimit-- && !strValue )  
     {
-        PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+        PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
         if (strValue != NULL)
         {
             rc = strcpy_s(DefaultPassphrase, MAX_PASSPHRASE_SIZE, strValue);
@@ -3210,7 +3210,7 @@ void getDefaultPassphase(int wlanIndex, char *DefaultPassphrase)
 	}
 #else
         /*CID: 64691 Unchecked return value*/
-    if(PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue)!= CCSP_SUCCESS)
+    if(PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue)!= CCSP_SUCCESS)
            CcspTraceInfo(("getDefaultPassphase:PSM read error !!!\n"));   
     if (strValue != NULL)
     {
@@ -3304,7 +3304,7 @@ void Captive_Portal_Check(void)
 #ifdef CISCO_XB3_PLATFORM_CHANGES
                 int retPsmMigSet;
 #endif
-	       	retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, NotifyWiFiChanges, ccsp_string,"false");
+	       	retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, NotifyWiFiChanges, ccsp_string,"false");
                 if (retPsmSet == CCSP_SUCCESS) {
 			CcspWifiTrace(("RDK_LOG_INFO,CaptivePortal:%s - PSM set of NotifyWiFiChanges success ...\n",__FUNCTION__));
 		}
@@ -3329,7 +3329,7 @@ void Captive_Portal_Check(void)
                 }
                 
 #ifdef CISCO_XB3_PLATFORM_CHANGES
-                retPsmMigSet=PSM_Set_Record_Value2(bus_handle,g_Subsystem, WiFiRestored_AfterMigration, ccsp_string,"false");
+                retPsmMigSet=PSM_Set_Record_Value2(bus_handle, NULL, WiFiRestored_AfterMigration, ccsp_string,"false");
                 if (retPsmMigSet == CCSP_SUCCESS) {
                         CcspWifiTrace(("RDK_LOG_INFO,CaptivePortal:%s - PSM set of WiFiRestored_AfterMigration success ...\n",__FUNCTION__));
                 }
@@ -3348,7 +3348,7 @@ void Captive_Portal_Check(void)
 
 		configWifi(redirect);	
 #ifdef CISCO_XB3_PLATFORM_CHANGES
-		PSM_Set_Record_Value2(bus_handle,g_Subsystem, FactoryReset, ccsp_string, "0");
+		PSM_Set_Record_Value2(bus_handle, NULL, FactoryReset, ccsp_string, "0");
 		CcspWifiTrace(("RDK_LOG_WARN, %s:%d Reset FactoryReset to 0\n",__FUNCTION__,__LINE__));
 #endif
 #ifdef WIFI_HAL_VERSION_3
@@ -3383,7 +3383,7 @@ void *RegisterWiFiConfigureCallBack(void *par)
     CHAR* bandName;
 #endif
     if (!g_wifidb_rfc) {
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, NotifyWiFiChanges, NULL, &stringValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, NotifyWiFiChanges, NULL, &stringValue);
 
     CcspWifiTrace(("RDK_LOG_WARN,%s CaptivePortal: PSM get of NotifyChanges value is %s PSM get returned %d...\n",__FUNCTION__,stringValue,retPsmGet));
     if ((retPsmGet != CCSP_SUCCESS) || (stringValue == NULL))
@@ -3660,7 +3660,7 @@ WiFiPramValueChangedCB
     CcspWifiTrace(("RDK_LOG_WARN,CaptivePortal:%s - value change received for parameter %s...\n",__FUNCTION__,val->parameterName));
 
     if (!g_wifidb_rfc) {
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, NotifyWiFiChanges, NULL, &stringValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, NotifyWiFiChanges, NULL, &stringValue);
     if ((retPsmGet != CCSP_SUCCESS) || (stringValue == NULL))
     {
         wifiDbgPrintf("%s %s not found in PSM and returned %d \n", __FUNCTION__, NotifyWiFiChanges, retPsmGet);
@@ -3907,7 +3907,7 @@ printf("%s: deleting records for index %d \n", __FUNCTION__, i);
 	    PSM_Del_Record(bus_handle,g_Subsystem,recName);
     }
 
-    PSM_Set_Record_Value2(bus_handle,g_Subsystem, ReloadConfig, ccsp_string, "true");
+    PSM_Set_Record_Value2(bus_handle, NULL, ReloadConfig, ccsp_string, "true");
 
     return ANSC_STATUS_SUCCESS;
 }
@@ -3938,7 +3938,7 @@ ANSC_STATUS CosaDmlWiFi_SetWiFiReservedSSIDNames (ANSC_HANDLE phContext, char *R
 
     memcpy (p, ReservedName, len_new + 1);
 
-    if (PSM_Set_Record_Value2 (bus_handle, g_Subsystem, ReservedSSIDNames, ccsp_string, pMyObject->ReservedSSIDNames) != CCSP_SUCCESS)
+    if (PSM_Set_Record_Value2(bus_handle, NULL, ReservedSSIDNames, ccsp_string, pMyObject->ReservedSSIDNames) != CCSP_SUCCESS)
     {
         return ANSC_STATUS_FAILURE;
     }
@@ -3958,7 +3958,7 @@ ANSC_STATUS CosaDmlWiFi_GetWiFiReservedSSIDNames (char *ReservedNames, unsigned 
     int retPsmGet;
     char *strValue = NULL;
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle, g_Subsystem, ReservedSSIDNames, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, ReservedSSIDNames, NULL, &strValue);
 
     if (retPsmGet == CCSP_SUCCESS)
     {
@@ -3998,7 +3998,7 @@ CosaDmlWiFiGetFactoryResetPsmData
     while (retry++ < 10)
     {
 	CcspWifiTrace(("RDK_LOG_WARN,WIFI %s :Calling PSM GET to get FactoryReset flag value\n",__FUNCTION__));
-	retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, FactoryReset, NULL, &strValue);
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, FactoryReset, NULL, &strValue);
 	if (retPsmGet == CCSP_SUCCESS) {
 	printf("%s %s = %s \n",__FUNCTION__, FactoryReset, strValue);
 	CcspWifiTrace(("RDK_LOG_WARN,WIFI %s :PSM GET Success %s = %s \n",__FUNCTION__, FactoryReset, strValue));
@@ -4006,14 +4006,14 @@ CosaDmlWiFiGetFactoryResetPsmData
 	    ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
 
             // Set to FALSE after FactoryReset has been applied
-	    // PSM_Set_Record_Value2(bus_handle,g_Subsystem, FactoryReset, ccsp_string, "0");
+	    // PSM_Set_Record_Value2(bus_handle, NULL, FactoryReset, ccsp_string, "0");
 
 	} else if (retPsmGet == CCSP_CR_ERR_INVALID_PARAM) { 
             *factoryResetFlag = 0;
 	    printf("%s PSM_Get_Record_Value2 (%s) returned error %d \n",__FUNCTION__, FactoryReset, retPsmGet); 
 		CcspWifiTrace(("RDK_LOG_WARN,WIFI %s :PSM_Get_Record_Value2 (%s) returned error %d \n",__FUNCTION__, FactoryReset, retPsmGet));
             // Set to FALSE
-	    PSM_Set_Record_Value2(bus_handle,g_Subsystem, FactoryReset, ccsp_string, "0");
+	    PSM_Set_Record_Value2(bus_handle, NULL, FactoryReset, ccsp_string, "0");
 	} else { 
 	    printf("%s PSM_Get_Record_Value2 returned error %d retry in 10 seconds \n",__FUNCTION__, retPsmGet);
 		CcspWifiTrace(("RDK_LOG_WARN,WIFI %s :returned error %d retry in 10 seconds\n",__FUNCTION__, retPsmGet));	
@@ -4036,7 +4036,7 @@ CosaDmlWiFiGetFactoryResetPsmData
     // in Comcast non-BWG builds.
     if (*factoryResetFlag == 0) {
 
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, SsidUpgradeRequired, NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, SsidUpgradeRequired, NULL, &strValue);
         if (retPsmGet == CCSP_SUCCESS) {
             printf("%s %s = %s \n",__FUNCTION__, SsidUpgradeRequired, strValue); 
 
@@ -4068,17 +4068,17 @@ CosaDmlWiFiGetFactoryResetPsmData
 
             // Set FactoryReset flags 
             sprintf(recName, FactoryResetSSID, 1);
-            PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "254");
+            PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "254");
             sprintf(recName, FactoryResetSSID, 2);
-            PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "254");
-            PSM_Set_Record_Value2(bus_handle,g_Subsystem, FactoryReset, ccsp_string, "1");
-            PSM_Set_Record_Value2(bus_handle,g_Subsystem, SsidUpgradeRequired, ccsp_string, "0"); 
+            PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "254");
+            PSM_Set_Record_Value2(bus_handle, NULL, FactoryReset, ccsp_string, "1");
+            PSM_Set_Record_Value2(bus_handle, NULL, SsidUpgradeRequired, ccsp_string, "0"); 
             //  Force new PSM values from default config and wifidb in Intel db for non-Primary SSIDs
             CosaDmlWiFiFactoryResetSsidData(3,16);
         }
     } else {
         // if the FactoryReset was set, we don't need to do the Upgrade reset as well.
-        PSM_Set_Record_Value2(bus_handle,g_Subsystem, SsidUpgradeRequired, ccsp_string, "0");
+        PSM_Set_Record_Value2(bus_handle, NULL, SsidUpgradeRequired, ccsp_string, "0");
     }
 */
 	CcspWifiTrace(("RDK_LOG_WARN,WIFI %s : Returning Success \n",__FUNCTION__));
@@ -4117,7 +4117,7 @@ BOOLEAN *resetFlag
             strValue = strdup(vlan_version);
         }
     } else {
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, WifiVlanCfgVersion, NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, WifiVlanCfgVersion, NULL, &strValue);
     }
     if (retPsmGet == CCSP_SUCCESS) {
         wifiDbgPrintf("%s %s = %s \n",__FUNCTION__, WifiVlanCfgVersion, strValue);
@@ -4172,7 +4172,7 @@ BOOLEAN *resetFlag
             ERR_CHK(rc);
         }
 
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
         if (retPsmGet == CCSP_SUCCESS) {
             wifiDbgPrintf("%s: found BssHotSpot value = %s \n", __func__, strValue);
             CcspWifiTrace(("RDK_LOG_WARN,WIFI %s : found BssHotSpot value = %s \n",__FUNCTION__, strValue));
@@ -4247,10 +4247,10 @@ CosaDmlWiFiGetRadioSetSecurityDataPsmData
             snprintf(recName, sizeof(recName), WepKeyLength, ulInstance);
             if (modeEnabled == COSA_DML_WIFI_SECURITY_WEP_64)
             {
-                    PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "64" );
+                    PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "64" );
             } else if (modeEnabled == COSA_DML_WIFI_SECURITY_WEP_128)
             {
-                    PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "128" );
+                    PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "128" );
             }
             if (g_wifidb_rfc) {
                 struct schema_Wifi_VAP_Config  *pcfg= NULL;
@@ -4377,7 +4377,7 @@ CosaDmlWiFiGetRadioFactoryResetPsmData
     unsigned int password = 0;
 	CcspWifiTrace(("RDK_LOG_WARN,WIFI %s : Calling PSM GET for %s \n",__FUNCTION__, WpsPin));
     if (!g_wifidb_rfc) {
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, WpsPin, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, WpsPin, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         password = _ansc_atoi(strValue);
 		CcspWifiTrace(("RDK_LOG_WARN,WIFI %s : PSM GET Success password %d \n",__FUNCTION__, password));
@@ -4415,7 +4415,7 @@ CosaDmlWiFiGetBSFactoryResetPsmData
 	CcspWifiTrace(("RDK_LOG_WARN,WIFI %s wlanIndex = %ld \n",__FUNCTION__, wlanIndex));
 	CcspWifiTrace(("RDK_LOG_WARN,WIFI %s Get Factory Reset PsmData & Apply to WIFI ",__FUNCTION__));
 
-	retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, bsEnable, NULL, &strValue);
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, bsEnable, NULL, &strValue);
 	if (retPsmGet == CCSP_SUCCESS) {
 		bsEn = _ansc_atoi(strValue);
 		int retStatus = wifi_setBandSteeringEnable(bsEn);
@@ -4431,7 +4431,7 @@ CosaDmlWiFiGetBSFactoryResetPsmData
 	memset(recName, 0, sizeof(recName));
 	snprintf(recName, sizeof(recName), bsRssi, ulInstance);
 
-	retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
 	if (retPsmGet == CCSP_SUCCESS) {
 		intValue = _ansc_atoi(strValue);
 		int retStatus = wifi_setBandSteeringRSSIThreshold(wlanIndex, intValue);
@@ -4551,7 +4551,7 @@ CosaWiFiDmlGetWPA3TransitionRFC (BOOL *WPA3_RFC)
     char *recName = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WPA3_Personal_Transition.Enable";
     char *strValue = NULL;
 
-    if(PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue) != CCSP_SUCCESS)
+    if(PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue) != CCSP_SUCCESS)
     {
         *WPA3_RFC = FALSE;
         CcspTraceError(("%s: fail to get PSM record for WPA3 Transition Enable RFC\n",__func__));
@@ -4581,7 +4581,7 @@ printf("%s g_Subsytem = %s wlanInex = %lu \n",__FUNCTION__, g_Subsystem, wlanInd
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), RadioIndex, ulInstance);
 	CcspWifiTrace(("RDK_LOG_WARN,WIFI %s Get Factory Reset PsmData & Apply to WIFI ",__FUNCTION__));
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         intValue = _ansc_atoi(strValue);
 fprintf(stderr, "-- %s %d wifi_setApRadioIndex  wlanIndex = %lu intValue=%d \n", __func__, __LINE__, wlanIndex, intValue);
@@ -4591,7 +4591,7 @@ fprintf(stderr, "-- %s %d wifi_setApRadioIndex  wlanIndex = %lu intValue=%d \n",
 
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), WlanEnable, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         intValue = _ansc_atoi(strValue);
     int retStatus = wifi_setApEnable(wlanIndex, intValue);
@@ -4606,7 +4606,7 @@ fprintf(stderr, "-- %s %d wifi_setApRadioIndex  wlanIndex = %lu intValue=%d \n",
 
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), BssSsid, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
 	wifi_setSSIDName(wlanIndex, strValue);
 	((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -4614,7 +4614,7 @@ fprintf(stderr, "-- %s %d wifi_setApRadioIndex  wlanIndex = %lu intValue=%d \n",
 
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), HideSsid, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         intValue = (_ansc_atoi(strValue) == 0) ? 1 : 0;
         wifi_setApSsidAdvertisementEnable(wlanIndex, intValue);
@@ -4623,7 +4623,7 @@ fprintf(stderr, "-- %s %d wifi_setApRadioIndex  wlanIndex = %lu intValue=%d \n",
 
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), SecurityMode, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         intValue = _ansc_atoi(strValue);
         CosaDmlWiFiGetRadioSetSecurityDataPsmData(wlanIndex, ulInstance, intValue);
@@ -4632,7 +4632,7 @@ fprintf(stderr, "-- %s %d wifi_setApRadioIndex  wlanIndex = %lu intValue=%d \n",
 
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), EncryptionMethod, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         intValue = _ansc_atoi(strValue);
 	if (intValue == COSA_DML_WIFI_AP_SEC_TKIP)
@@ -4653,7 +4653,7 @@ fprintf(stderr, "-- %s %d wifi_setApRadioIndex  wlanIndex = %lu intValue=%d \n",
 
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), Passphrase, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         wifi_setApSecurityKeyPassphrase(wlanIndex, strValue);
 	((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -4661,7 +4661,7 @@ fprintf(stderr, "-- %s %d wifi_setApRadioIndex  wlanIndex = %lu intValue=%d \n",
 
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), WmmRadioEnable, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS)
     {
         intValue = _ansc_atoi(strValue);
@@ -4669,14 +4669,14 @@ fprintf(stderr, "-- %s %d wifi_setApRadioIndex  wlanIndex = %lu intValue=%d \n",
         // This value is also written to PSM because it is not stored by Atheros
         // Want to override with Platform specific data on factory reset
         snprintf(recName, sizeof(recName),WmmEnable, ulInstance);
-        PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+        PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         snprintf(recName, sizeof(recName), UAPSDEnable, ulInstance);
-        PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+        PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
     }
 
     unsigned int password = 0;
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, WpsPin, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, WpsPin, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         password = _ansc_atoi(strValue);
         wifi_setApWpsDevicePIN(wlanIndex, password);
@@ -4685,7 +4685,7 @@ fprintf(stderr, "-- %s %d wifi_setApRadioIndex  wlanIndex = %lu intValue=%d \n",
 
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), WpsEnable, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         int intValue = _ansc_atoi(strValue);
 #if !defined(_COSA_BCM_MIPS_)&& !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
@@ -4704,7 +4704,7 @@ fprintf(stderr, "-- %s %d wifi_setApRadioIndex  wlanIndex = %lu intValue=%d \n",
 
    memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), BssHotSpot, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         // if this is a HotSpot SSID, then set EnableOnline=TRUE and
         //  it should only be brought up once the RouterEnabled=TRUE
@@ -4766,7 +4766,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__, g_Subsystem);
     if (!g_wifidb_rfc) {
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), CTSProtection, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
 	BOOL enable = _ansc_atoi(strValue);
         pCfg->CTSProtectionMode = (enable == TRUE) ? TRUE : FALSE;
@@ -4782,7 +4782,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__, g_Subsystem);
     if (!g_wifidb_rfc) {
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), BeaconInterval, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         intValue = _ansc_atoi(strValue);
         pCfg->BeaconInterval = intValue;
@@ -4798,7 +4798,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__, g_Subsystem);
     memset(recName, 0, sizeof(recName));
 
     snprintf(recName, sizeof(recName), DTIMInterval, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         intValue = _ansc_atoi(strValue);
         pCfg->DTIMInterval = intValue;
@@ -4813,7 +4813,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__, g_Subsystem);
     if (!g_wifidb_rfc) {
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), FragThreshold, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     } else {
         intValue = pcfg->fragmentation_threshold;
     }
@@ -4848,7 +4848,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__, g_Subsystem);
     if (!g_wifidb_rfc) {
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), RTSThreshold, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         intValue = _ansc_atoi(strValue);
         pCfg->RTSThreshold = intValue;
@@ -4863,7 +4863,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__, g_Subsystem);
     if (!g_wifidb_rfc) {
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), ObssCoex, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
 	BOOL enable = _ansc_atoi(strValue);
         pCfg->ObssCoex = (enable == TRUE) ? TRUE : FALSE;
@@ -4879,7 +4879,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__, g_Subsystem);
     if (!g_wifidb_rfc) {
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), STBCEnable, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         BOOL enable = _ansc_atoi(strValue);
         pCfg->X_CISCO_COM_STBCEnable = (enable == TRUE) ? TRUE : FALSE;
@@ -4894,7 +4894,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__, g_Subsystem);
     if (!g_wifidb_rfc) {
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), GuardInterval, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         // if COSA_DML_WIFI_GUARD_INTVL_800ns set to FALSE otherwise was (400ns or Auto, set to TRUE)
         int guardInterval = _ansc_atoi(strValue);
@@ -4912,7 +4912,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__, g_Subsystem);
     if (!g_wifidb_rfc) {
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName),TransmitPower, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         int transmitPower = _ansc_atoi(strValue);
         pCfg->TransmitPower = transmitPower;
@@ -4936,7 +4936,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__, g_Subsystem);
     if (!g_wifidb_rfc) {
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), UserControl, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         pCfg->MbssUserControl = atoi(strValue);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -4950,7 +4950,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__, g_Subsystem);
     if (!g_wifidb_rfc) {
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), AdminControl, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         pCfg->AdminControl = atoi(strValue);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -4964,7 +4964,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__, g_Subsystem);
     if (!g_wifidb_rfc) {
 	memset(recName, 0, sizeof(recName));
 	snprintf(recName, sizeof(recName), GreenField, ulInstance);
-	retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
 	if (retPsmGet == CCSP_SUCCESS) {
         pCfg->X_CISCO_COM_11nGreenfieldEnabled =  _ansc_atoi(strValue);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -5033,7 +5033,7 @@ CosaDmlWiFiSetRadioPsmData
     memset(strValue, '\0', sizeof(strValue));
     snprintf(recName, sizeof(recName), BeaconInterval, ulInstance);
     snprintf(strValue, sizeof(strValue), "%d", wifiRadioOperParam->beaconInterval);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
           wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting BeaconInterval\n",__FUNCTION__, retPsmSet);
     }
@@ -5043,7 +5043,7 @@ CosaDmlWiFiSetRadioPsmData
     memset(strValue, '\0', sizeof(strValue));
     snprintf(recName, sizeof(recName), DTIMInterval, ulInstance);
     snprintf(strValue, sizeof(strValue),"%d", wifiRadioOperParam->dtimPeriod);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
           wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting DTIMInterval\n",__FUNCTION__, retPsmSet);
     }
@@ -5053,7 +5053,7 @@ CosaDmlWiFiSetRadioPsmData
     memset(strValue, '\0', sizeof(strValue));
     snprintf(recName, sizeof(recName), FragThreshold, ulInstance);
     snprintf(strValue, sizeof(strValue), "%d", wifiRadioOperParam->fragmentationThreshold);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
           wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting FragmentationThreshold\n",__FUNCTION__, retPsmSet);
     }
@@ -5063,7 +5063,7 @@ CosaDmlWiFiSetRadioPsmData
     memset(strValue, '\0', sizeof(strValue));
     snprintf(recName, sizeof(recName), RTSThreshold, ulInstance);
     snprintf(strValue, sizeof(strValue), "%d", wifiRadioOperParam->rtsThreshold);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
           wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting RTS Threshold\n",__FUNCTION__, retPsmSet);
     }
@@ -5073,7 +5073,7 @@ CosaDmlWiFiSetRadioPsmData
     memset(strValue, '\0', sizeof(strValue));
     snprintf(recName, sizeof(recName), GuardInterval, ulInstance);
     snprintf(strValue, sizeof(strValue), "%d", wifiRadioOperParam->guardInterval);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
           wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting Guard Interval \n",__FUNCTION__, retPsmSet);
     }
@@ -5083,7 +5083,7 @@ CosaDmlWiFiSetRadioPsmData
     memset(strValue, '\0', sizeof(strValue));
     snprintf(recName, sizeof(recName), TransmitPower, ulInstance);
     snprintf(strValue,sizeof(strValue),"%d", wifiRadioOperParam->transmitPower);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
           wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting Transmit Power \n",__FUNCTION__, retPsmSet);
     }
@@ -5099,7 +5099,7 @@ CosaDmlWiFiSetRadioPsmData
         memset(strValue, '\0', sizeof(strValue));
         snprintf(recName, sizeof(recName), CTSProtection, ulInstance);
     snprintf(strValue, sizeof(strValue), "%d",pCfg->CTSProtectionMode);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting CTSProtectionMode\n",__FUNCTION__, retPsmSet); 
     }
@@ -5113,7 +5113,7 @@ CosaDmlWiFiSetRadioPsmData
         memset(strValue, '\0', sizeof(strValue));
         snprintf(recName, sizeof(recName), BeaconInterval, ulInstance);
     snprintf(strValue,  sizeof(strValue), "%lu",pCfg->BeaconInterval);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting BeaconInterval\n",__FUNCTION__, retPsmSet); 
     }
@@ -5127,7 +5127,7 @@ CosaDmlWiFiSetRadioPsmData
         memset(strValue, '\0', sizeof(strValue));
         snprintf(recName, sizeof(recName), DTIMInterval, ulInstance);
     snprintf(strValue,  sizeof(strValue), "%lu",pCfg->DTIMInterval);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting DTIMInterval\n",__FUNCTION__, retPsmSet); 
     }
@@ -5141,7 +5141,7 @@ CosaDmlWiFiSetRadioPsmData
         memset(strValue, '\0', sizeof(strValue));
         snprintf(recName, sizeof(recName), FragThreshold, ulInstance);
     snprintf(strValue, sizeof(strValue),"%lu",pCfg->FragmentationThreshold);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting FragmentationThreshold\n",__FUNCTION__, retPsmSet); 
     }
@@ -5155,7 +5155,7 @@ CosaDmlWiFiSetRadioPsmData
         memset(strValue, '\0', sizeof(strValue));
     snprintf(recName, sizeof(recName), RTSThreshold, ulInstance);
     snprintf(strValue, sizeof(strValue),"%lu",pCfg->RTSThreshold);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting RTS Threshold\n",__FUNCTION__, retPsmSet); 
     }
@@ -5169,7 +5169,7 @@ CosaDmlWiFiSetRadioPsmData
         memset(strValue, '\0', sizeof(strValue));
         snprintf(recName, sizeof(recName), ObssCoex, ulInstance);
     snprintf(strValue, sizeof(strValue),"%d",pCfg->ObssCoex);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting ObssCoex\n",__FUNCTION__, retPsmSet); 
     }
@@ -5183,7 +5183,7 @@ CosaDmlWiFiSetRadioPsmData
         memset(strValue, '\0', sizeof(strValue));
     snprintf(recName, sizeof(recName), STBCEnable, ulInstance);
     snprintf(strValue, sizeof(strValue),"%d",pCfg->X_CISCO_COM_STBCEnable);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting STBC \n",__FUNCTION__, retPsmSet); 
     }
@@ -5197,7 +5197,7 @@ CosaDmlWiFiSetRadioPsmData
         memset(strValue, '\0', sizeof(strValue));
     snprintf(recName, sizeof(recName), GuardInterval, ulInstance);
     snprintf(strValue, sizeof(strValue),"%d",pCfg->GuardInterval);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting Guard Interval \n",__FUNCTION__, retPsmSet); 
     }
@@ -5212,7 +5212,7 @@ CosaDmlWiFiSetRadioPsmData
         memset(strValue, '\0', sizeof(strValue));
         snprintf(recName, sizeof(recName), TransmitPower, ulInstance);
         snprintf(strValue, sizeof(strValue),"%d",pCfg->TransmitPower);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting Transmit Power \n",__FUNCTION__, retPsmSet); 
     }
@@ -5226,7 +5226,7 @@ CosaDmlWiFiSetRadioPsmData
         memset(strValue, '\0', sizeof(strValue));
         snprintf(recName, sizeof(recName), UserControl, ulInstance);
         snprintf(strValue, sizeof(strValue),"%d",pCfg->MbssUserControl);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
 	    wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting UserControl \n",__FUNCTION__, retPsmSet);
         }
@@ -5238,7 +5238,7 @@ CosaDmlWiFiSetRadioPsmData
     if (pCfg->AdminControl != pStoredCfg->AdminControl) {
         snprintf(recName, sizeof(recName), AdminControl, ulInstance);
     snprintf(strValue, sizeof(strValue), "%d",pCfg->AdminControl);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
 	    wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting AdminControl  \n",__FUNCTION__, retPsmSet); 
         }
@@ -5252,7 +5252,7 @@ CosaDmlWiFiSetRadioPsmData
         memset(strValue, '\0', sizeof(strValue));
         snprintf(recName, sizeof(recName), GreenField, ulInstance);
         snprintf(strValue, sizeof(strValue),"%d",pCfg->X_CISCO_COM_11nGreenfieldEnabled);
-        retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting GreenfieldEnabled  \n",__FUNCTION__, retPsmSet); 
     }
@@ -5473,7 +5473,7 @@ INT CosaWifiAdjustBeaconRate(int radioindex, char *beaconRate) {
         if (radioindex == (int)radioPerAp)
         {
             snprintf(recName, sizeof(recName), BeaconRateCtl, Instance+1);
-            retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, beaconRate);
+            retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, beaconRate);
             if (retPsmSet != CCSP_SUCCESS)
             {
                 wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting BeaconRate \n",__FUNCTION__, retPsmSet);
@@ -5510,7 +5510,7 @@ INT CosaWifiAdjustBeaconRate(int radioindex, char *beaconRate) {
 		int rc = -1;
 		for(Instance = 0;Instance <= 14;Instance+=2) {
                         snprintf(recName, sizeof(recName), BeaconRateCtl, Instance+1);
-                        retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, beaconRate);
+                        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, beaconRate);
                         if (retPsmSet != CCSP_SUCCESS) {
                                 wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting BeaconRate \n",__FUNCTION__, retPsmSet);
                         }
@@ -5564,7 +5564,7 @@ INT CosaWifiAdjustBeaconRate(int radioindex, char *beaconRate) {
 		int safe_rc = -1;
                 for(Instance =1 ;Instance <= 15;Instance+=2) {
                         snprintf(recName, sizeof(recName), BeaconRateCtl, Instance+1);
-                        retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, beaconRate);
+                        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, beaconRate);
                         if (retPsmSet != CCSP_SUCCESS) {
                                 wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting BeaconRate \n",__FUNCTION__, retPsmSet);
                         }
@@ -5787,7 +5787,7 @@ CosaDmlWiFiGetAccessPointPsmData
     // SSID does not need to be enabled to push this param to the configuration
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), BssHotSpot, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     } else {
         strValue = pcfg->bss_hotspot?strdup("1"):strdup("0");
     }
@@ -5816,7 +5816,7 @@ CosaDmlWiFiGetAccessPointPsmData
         if (!g_wifidb_rfc) {
         memset(recName, 0, sizeof(recName));
         snprintf(recName, sizeof(recName), BSSTransitionActivated, ulInstance);
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
         } else {
             strValue = pcfg->bss_transition_activated?strdup("true"):strdup("false");
         }
@@ -5860,7 +5860,7 @@ CosaDmlWiFiGetAccessPointPsmData
          if (!g_wifidb_rfc) {
 		memset(recName, 0, sizeof(recName));
 		snprintf(recName,  sizeof(recName), BeaconRateCtl, ulInstance);
-		retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+		retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
           } else {
               strValue = strdup(pcfg->beacon_rate_ctl);
           }
@@ -5875,7 +5875,7 @@ CosaDmlWiFiGetAccessPointPsmData
         }
 
 		/*else {
-			PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "0");
+			PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "0");
 			ULONG OperatingStandards;
 			CosaDmlWiFiGetApStandards(wlanIndex, &OperatingStandards);
 			CosaDmlWiFiSetApBeaconRateControl(wlanIndex, OperatingStandards);			
@@ -5893,7 +5893,7 @@ CosaDmlWiFiGetAccessPointPsmData
       if (!g_wifidb_rfc) {
         memset(recName, 0, sizeof(recName));
         snprintf(recName,  sizeof(recName), NeighborReportActivated, ulInstance);
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
       } else {
         strValue = pcfg->nbr_report_activated?strdup("true"):strdup("false");
       }
@@ -5958,7 +5958,7 @@ PCOSA_DML_WIFI_AP_CFG       pCfg
     //IsolationEnable
     snprintf(recName, sizeof(recName), ApIsolationEnable, ulInstance);
     snprintf(strValue, sizeof(strValue), "%d",(pCfg->IsolationEnable == TRUE) ? 1 : 0 );
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
           wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting ApIsolationEnable \n",__FUNCTION__, retPsmSet);
     }
@@ -5966,7 +5966,7 @@ PCOSA_DML_WIFI_AP_CFG       pCfg
     //BssMaxNumSta
     snprintf(recName, sizeof(recName), BssMaxNumSta, ulInstance);
     snprintf(strValue, sizeof(strValue), "%d",pCfg->BssMaxNumSta);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
           wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting BssMaxNumSta\n",__FUNCTION__, retPsmSet);
     }
@@ -5974,7 +5974,7 @@ PCOSA_DML_WIFI_AP_CFG       pCfg
     //WMMEnable
     snprintf(recName, sizeof(recName), WmmEnable, ulInstance);
     snprintf(strValue, sizeof(strValue), "%d",pCfg->WMMEnable);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
           wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting WmmEnable\n",__FUNCTION__, retPsmSet);
     }
@@ -5982,7 +5982,7 @@ PCOSA_DML_WIFI_AP_CFG       pCfg
     //BSSTransitionActivated
     snprintf(recName, sizeof(recName), BSSTransitionActivated, ulInstance);
     snprintf(strValue, sizeof(strValue), "%s", (pCfg->BSSTransitionActivated ? "true" : "false"));
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
 
     if (retPsmSet != CCSP_SUCCESS) {
           CcspTraceWarning(("%s: PSM_Set_Record_Value2 returned error %d while setting BSSTransitionActivated\n",__FUNCTION__, retPsmSet));
@@ -5991,7 +5991,7 @@ PCOSA_DML_WIFI_AP_CFG       pCfg
     /*NeighborReportActivated*/
     snprintf(recName, sizeof(recName), NeighborReportActivated, ulInstance);
     snprintf(strValue, sizeof(strValue), "%s", (pCfg->X_RDKCENTRAL_COM_NeighborReportActivated ? "true" : "false"));
-    retPsmSet = PSM_Set_Record_Value2( bus_handle, g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS)
     {
         CcspTraceWarning(("%s: PSM_Set_Record_Value2 returned error %d while setting NeighborReportActivated\n",__FUNCTION__, retPsmSet));
@@ -6000,7 +6000,7 @@ PCOSA_DML_WIFI_AP_CFG       pCfg
     /*beaconRate*/
     snprintf(recName, sizeof(recName), BeaconRateCtl, ulInstance);
     snprintf(strValue, sizeof(strValue), "%s", (pCfg->BeaconRate));
-    retPsmSet = PSM_Set_Record_Value2( bus_handle, g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS)
     {
         CcspTraceWarning(("%s: PSM_Set_Record_Value2 returned error %d while setting BeaconRateCtl\n",__FUNCTION__, retPsmSet));
@@ -6017,7 +6017,7 @@ PCOSA_DML_WIFI_AP_CFG       pCfg
     if (pCfg->WMMEnable != pStoredCfg->WMMEnable) {
         snprintf(recName, sizeof(recName), WmmEnable, ulInstance);
         snprintf(strValue, sizeof(strValue), "%d",pCfg->WMMEnable);
-        retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting WmmEnable\n",__FUNCTION__, retPsmSet); 
         }
@@ -6030,7 +6030,7 @@ PCOSA_DML_WIFI_AP_CFG       pCfg
     if (pCfg->UAPSDEnable != pStoredCfg->UAPSDEnable) {
         snprintf(recName, sizeof(recName), UAPSDEnable, ulInstance);
         snprintf(strValue, sizeof(strValue), "%d",pCfg->UAPSDEnable);
-        retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting UAPSDEnable\n",__FUNCTION__, retPsmSet); 
         }
@@ -6045,7 +6045,7 @@ PCOSA_DML_WIFI_AP_CFG       pCfg
     if (pCfg->WmmNoAck != pStoredCfg->WmmNoAck) {
         snprintf(recName, sizeof(recName), WmmNoAck, ulInstance);
         snprintf(strValue, sizeof(strValue), "%d",!pCfg->WmmNoAck);
-        retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting WmmNoAck\n",__FUNCTION__, retPsmSet); 
         }
@@ -6057,7 +6057,7 @@ PCOSA_DML_WIFI_AP_CFG       pCfg
     if (pCfg->BssMaxNumSta != pStoredCfg->BssMaxNumSta) {
         snprintf(recName, sizeof(recName), BssMaxNumSta, ulInstance);
         snprintf(strValue, sizeof(strValue), "%d",pCfg->BssMaxNumSta);
-        retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting BssMaxNumSta\n",__FUNCTION__, retPsmSet); 
         }
@@ -6070,7 +6070,7 @@ PCOSA_DML_WIFI_AP_CFG       pCfg
     if (pCfg->IsolationEnable != pStoredCfg->IsolationEnable) {
         snprintf(recName,  sizeof(recName), ApIsolationEnable, ulInstance);
         snprintf(strValue, sizeof(strValue), "%d",(pCfg->IsolationEnable == TRUE) ? 1 : 0 );
-        retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting ApIsolationEnable \n",__FUNCTION__, retPsmSet); 
         }
@@ -6082,7 +6082,7 @@ PCOSA_DML_WIFI_AP_CFG       pCfg
     if (pCfg->BssHotSpot != pStoredCfg->BssHotSpot) {
         snprintf(recName, sizeof(recName), BssHotSpot, ulInstance);
         snprintf(strValue, sizeof(strValue), "%d",(pCfg->BssHotSpot == TRUE) ? 1 : 0 );
-        retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting BssHotSpot \n",__FUNCTION__, retPsmSet); 
         }
@@ -6094,7 +6094,7 @@ PCOSA_DML_WIFI_AP_CFG       pCfg
     if (strcmp(pCfg->BeaconRate, pStoredCfg->BeaconRate) != 0) {
 	snprintf(recName, sizeof(recName), BeaconRateCtl, ulInstance);
 	snprintf(strValue, sizeof(strValue), "%s",pCfg->BeaconRate);
-	retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+	retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
 	if (retPsmSet != CCSP_SUCCESS) {
 	    wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting BeaconRate \n",__FUNCTION__, retPsmSet);
 	}
@@ -6134,7 +6134,7 @@ ANSC_STATUS CosaDmlWiFiGetBridge0PsmData(char *ip, char *sub) {
                 /*CID: 135508 :BUFFER_SIZE_WARNING*/
 		strncpy(ipAddr,ip, sizeof(ipAddr)-1);
 	} else  {
-		retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, "dmsb.atom.l3net.4.V4Addr", NULL, &strValue);
+		retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "dmsb.atom.l3net.4.V4Addr", NULL, &strValue);
 		if (retPsmGet == CCSP_SUCCESS) {
 			strncpy(ipAddr,strValue, sizeof(ipAddr)-1); 
 			((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -6145,7 +6145,7 @@ ANSC_STATUS CosaDmlWiFiGetBridge0PsmData(char *ip, char *sub) {
                 /*CID: 135508 :BUFFER_SIZE_WARNING*/
 		strncpy(ipSubNet,sub, sizeof(ipAddr)-1); 
 	} else {
-		retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, "dmsb.atom.l3net.4.V4SubnetMask", NULL, &strValue);
+		retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "dmsb.atom.l3net.4.V4SubnetMask", NULL, &strValue);
 		if (retPsmGet == CCSP_SUCCESS) {
                         /*CID: 135508 :BUFFER_SIZE_WARNING*/
 			strncpy(ipSubNet,strValue, sizeof(ipAddr)-1); 
@@ -6177,7 +6177,7 @@ CosaDmlWiFi_GetGoodRssiThresholdValue( int	*piRssiThresholdValue )
 	*piRssiThresholdValue = 0;
 
         if (!g_wifidb_rfc) {
-	retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, GoodRssiThreshold, NULL, &strValue );
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, GoodRssiThreshold, NULL, &strValue );
 	if (retPsmGet == CCSP_SUCCESS) 
 	{
 		*piRssiThresholdValue = _ansc_atoi( strValue );
@@ -6211,7 +6211,7 @@ CosaDmlWiFi_SetGoodRssiThresholdValue( int	iRssiThresholdValue )
 	CcspWifiTrace(("RDK_LOG_WARN,WIFI %s : Calling PSM Set \n",__FUNCTION__ ));
 
 	snprintf( RSSIThreshold, sizeof(RSSIThreshold), "%d", iRssiThresholdValue );
-	retPsmSet = PSM_Set_Record_Value2( bus_handle, g_Subsystem, GoodRssiThreshold, ccsp_string, RSSIThreshold );
+	retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, GoodRssiThreshold, ccsp_string, RSSIThreshold );
 	if (retPsmSet == CCSP_SUCCESS ) 
 	{
 		CcspTraceInfo(("%s PSM set success Value: %d\n", __FUNCTION__, iRssiThresholdValue));
@@ -6254,7 +6254,7 @@ CosaDmlWiFi_GetAssocCountThresholdValue( int	*piAssocCountThresholdValue )
         deauthCountThreshold = 0;
 
         if (!g_wifidb_rfc) {
-	retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, AssocCountThreshold, NULL, &strValue );
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, AssocCountThreshold, NULL, &strValue );
 	if (retPsmGet == CCSP_SUCCESS) 
 	{
 		*piAssocCountThresholdValue = _ansc_atoi( strValue );
@@ -6296,7 +6296,7 @@ CosaDmlWiFi_SetAssocCountThresholdValue( int	iAssocCountThresholdValue )
     {
         ERR_CHK(rc);
     }
-	retPsmSet = PSM_Set_Record_Value2( bus_handle, g_Subsystem, AssocCountThreshold, ccsp_string, associationCountThreshold );
+	retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, AssocCountThreshold, ccsp_string, associationCountThreshold );
 	if (retPsmSet == CCSP_SUCCESS )
 	{
 		CcspTraceInfo(("%s PSM set success Value: %d\n", __FUNCTION__, iAssocCountThresholdValue));
@@ -6343,7 +6343,7 @@ CosaDmlWiFi_GetAssocMonitorDurationValue( int	*piAssocMonitorDurationValue )
         deauthMonitorDuration = 0;
 
         if (!g_wifidb_rfc) {
-	retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, AssocMonitorDuration, NULL, &strValue );
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, AssocMonitorDuration, NULL, &strValue );
 	if (retPsmGet == CCSP_SUCCESS) 
 	{
 		*piAssocMonitorDurationValue = _ansc_atoi( strValue );
@@ -6387,7 +6387,7 @@ CosaDmlWiFi_SetAssocMonitorDurationValue( int	iAssocMonitorDurationValue )
     {
         ERR_CHK(rc);
     }
-	retPsmSet = PSM_Set_Record_Value2( bus_handle, g_Subsystem, AssocMonitorDuration, ccsp_string, associationMonitorDuration );
+	retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, AssocMonitorDuration, ccsp_string, associationMonitorDuration );
 	if (retPsmSet == CCSP_SUCCESS )
 	{
 		CcspTraceInfo(("%s PSM set success Value: %d\n", __FUNCTION__, iAssocMonitorDurationValue));
@@ -6434,7 +6434,7 @@ CosaDmlWiFi_GetAssocGateTimeValue( int	*piAssocGateTimeValue )
         deauthGateTime = 0;
 
         if (!g_wifidb_rfc) {
-	retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, AssocGateTime, NULL, &strValue );
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, AssocGateTime, NULL, &strValue );
 	if (retPsmGet == CCSP_SUCCESS) 
 	{
 		*piAssocGateTimeValue = _ansc_atoi( strValue );
@@ -6479,7 +6479,7 @@ CosaDmlWiFi_SetAssocGateTimeValue( int	iAssocGateTimeValue )
     {
         ERR_CHK(rc);
     }
-	retPsmSet = PSM_Set_Record_Value2( bus_handle, g_Subsystem, AssocGateTime, ccsp_string, associationGateTime );
+	retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, AssocGateTime, ccsp_string, associationGateTime );
 	if (retPsmSet == CCSP_SUCCESS )
 	{
 		CcspTraceInfo(("%s PSM set success Value: %d\n", __FUNCTION__, iAssocGateTimeValue));
@@ -6528,7 +6528,7 @@ CosaDmlWiFi_GetRapidReconnectThresholdValue(ULONG vAPIndex, int	*rapidReconnThre
         ERR_CHK(rc);
     }
         if (!g_wifidb_rfc) {
-	retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, rapidReconnThreshold, NULL, &strValue );
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, rapidReconnThreshold, NULL, &strValue );
 	if (retPsmGet == CCSP_SUCCESS)
 	{
 		*rapidReconnThresholdValue = _ansc_atoi( strValue );
@@ -6562,7 +6562,7 @@ CosaDmlWiFi_GetFeatureMFPConfigValue( BOOLEAN *pbFeatureMFPConfig )
         if (!g_wifidb_rfc) {
         char *strValue  = NULL;
         int   retPsmGet = CCSP_SUCCESS;
-	retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, FeatureMFPConfig, NULL, &strValue );
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, FeatureMFPConfig, NULL, &strValue );
 	if (retPsmGet == CCSP_SUCCESS) 
 	{
 		*pbFeatureMFPConfig = _ansc_atoi( strValue );
@@ -6609,7 +6609,7 @@ CosaDmlWiFi_SetRapidReconnectThresholdValue(ULONG vAPIndex, int	rapidReconnThres
     {
         ERR_CHK(rc);
     }
-	retPsmSet = PSM_Set_Record_Value2( bus_handle, g_Subsystem, strValue, ccsp_string, rapidReconnThreshold );
+	retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, strValue, ccsp_string, rapidReconnThreshold );
 	if (retPsmSet == CCSP_SUCCESS )
 	{
 		CcspTraceInfo(("%s PSM set success Value: %d\n", __FUNCTION__, rapidReconnThresholdValue));
@@ -6651,7 +6651,7 @@ CosaDmlWiFi_GetApMFPConfigValue( ULONG vAPIndex, char *pMFPConfig )
         if (!g_wifidb_rfc) {
 	snprintf(sApMFPConfig, sizeof(sApMFPConfig), ApMFPConfig, vAPIndex + 1 );
 
-	retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, sApMFPConfig, NULL,  &strValue);
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, sApMFPConfig, NULL,  &strValue);
 	if (retPsmGet == CCSP_SUCCESS)
 	{
 		/* There is a mismatch between HAL and CCSP. so in order to sync with HAL. 
@@ -6735,7 +6735,7 @@ CosaDmlWiFi_SetApMFPConfigValue ( ULONG vAPIndex, char *pMFPConfig )
 	CcspWifiTrace(("RDK_LOG_WARN,WIFI %s : Calling PSM Set \n",__FUNCTION__ ));
         snprintf(strValue, sizeof(strValue), ApMFPConfig, vAPIndex + 1 );
 
-	retPsmSet = PSM_Set_Record_Value2( bus_handle, g_Subsystem, strValue, ccsp_string, pMFPConfig );
+	retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, strValue, ccsp_string, pMFPConfig );
 	if (retPsmSet == CCSP_SUCCESS )
 	{
 		CcspTraceInfo(("%s PSM set success Value: %s\n", __FUNCTION__, pMFPConfig));
@@ -6775,7 +6775,7 @@ CosaDmlWiFi_SetFeatureMFPConfigValue( BOOLEAN bFeatureMFPConfig )
 	CcspWifiTrace(("RDK_LOG_WARN,WIFI %s : Calling PSM Set \n",__FUNCTION__ ));
 
 	snprintf( acFeatureMFPConfig, sizeof(acFeatureMFPConfig), "%d", bFeatureMFPConfig );
-	retPsmSet = PSM_Set_Record_Value2( bus_handle, g_Subsystem, FeatureMFPConfig, ccsp_string, acFeatureMFPConfig );
+	retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, FeatureMFPConfig, ccsp_string, acFeatureMFPConfig );
 	if (retPsmSet == CCSP_SUCCESS ) 
 	{
 		CcspTraceInfo(("%s PSM set success Value: %d\n", __FUNCTION__, bFeatureMFPConfig));
@@ -6824,7 +6824,7 @@ CosaDmlWiFi_GetRapidReconnectCountEnable(ULONG vAPIndex, BOOLEAN *pbReconnectCou
         if (!g_wifidb_rfc) {
 	snprintf(rapidReconnCountEnable, sizeof(rapidReconnCountEnable), RapidReconnCountEnable, vAPIndex + 1 );
 
-	retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, rapidReconnCountEnable, NULL, &strValue );
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, rapidReconnCountEnable, NULL, &strValue );
 	if (retPsmGet == CCSP_SUCCESS) 
 	{
 		*pbReconnectCountEnable = _ansc_atoi( strValue );
@@ -6865,7 +6865,7 @@ CosaDmlWiFi_SetRapidReconnectCountEnable(ULONG vAPIndex, BOOLEAN bReconnectCount
 
 	snprintf(rapidReconnCountEnable, sizeof(rapidReconnCountEnable), "%d", bReconnectCountEnable);
 	snprintf(strValue, sizeof(strValue), RapidReconnCountEnable, vAPIndex + 1 );
-	retPsmSet = PSM_Set_Record_Value2( bus_handle, g_Subsystem, strValue, ccsp_string, rapidReconnCountEnable );
+	retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, strValue, ccsp_string, rapidReconnCountEnable );
 	if (retPsmSet == CCSP_SUCCESS ) 
 	{
 		sWiFiDmlApStoredCfg[vAPIndex].Cfg.X_RDKCENTRAL_COM_rapidReconnectCountEnable = bReconnectCountEnable;
@@ -7053,7 +7053,7 @@ CosaDmlWiFiApGetNeighborReportActivated(ULONG vAPIndex, BOOLEAN *pbNeighborRepor
         memset(neighborReportActivated, 0, sizeof(neighborReportActivated));
 	snprintf(neighborReportActivated, sizeof(neighborReportActivated), NeighborReportActivated, vAPIndex + 1 );
         *pbNeighborReportActivated = FALSE;
-	retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, neighborReportActivated, NULL, &strValue );
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, neighborReportActivated, NULL, &strValue );
         }
 	if (retPsmGet == CCSP_SUCCESS) 
 	{
@@ -7093,7 +7093,7 @@ CosaDmlWiFiApSetNeighborReportActivated(ULONG vAPIndex, BOOLEAN bNeighborReportA
 	if (wifi_setNeighborReportActivation(vAPIndex, bNeighborReportActivated) == RETURN_OK) {
 		snprintf(neighborReportActivated,sizeof(neighborReportActivated), "%s", (bNeighborReportActivated ? "true" : "false"));
 		snprintf(strValue,sizeof(strValue), NeighborReportActivated, vAPIndex + 1 );
-		retPsmSet = PSM_Set_Record_Value2( bus_handle, g_Subsystem, strValue, ccsp_string, neighborReportActivated );
+		retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, strValue, ccsp_string, neighborReportActivated );
 		if (retPsmSet == CCSP_SUCCESS ) 
 		{
 			sWiFiDmlApStoredCfg[vAPIndex].Cfg.X_RDKCENTRAL_COM_NeighborReportActivated = bNeighborReportActivated;
@@ -7155,7 +7155,7 @@ CosaDmlWiFi_GetRapidReconnectIndicationEnable(BOOL *bEnable, BOOL usePersistent)
     CcspWifiTrace(("RDK_LOG_WARN,%s : Calling PSM Get\n",__FUNCTION__ ));
 
     if (!g_wifidb_rfc) {
-    retPsmGet = PSM_Get_Record_Value2(bus_handle, g_Subsystem, RapidReconnectIndicationEnable, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, RapidReconnectIndicationEnable, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS)
     {
         *bEnable = _ansc_atoi( strValue );
@@ -7190,7 +7190,7 @@ CosaDmlWiFi_SetRapidReconnectIndicationEnable(BOOL bEnable )
     CcspWifiTrace(("RDK_LOG_WARN,%s : Calling PSM Set \n",__FUNCTION__ ));
 
     snprintf( FailureEnable, sizeof(FailureEnable), "%d", bEnable );
-    retPsmSet = PSM_Set_Record_Value2( bus_handle, g_Subsystem, RapidReconnectIndicationEnable, ccsp_string, FailureEnable );
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, RapidReconnectIndicationEnable, ccsp_string, FailureEnable );
     if (retPsmSet == CCSP_SUCCESS )
     {
         ((PCOSA_DATAMODEL_WIFI)g_pCosaBEManager->hWifi)->bRapidReconnectIndicationEnabled = bEnable;
@@ -7259,7 +7259,7 @@ CosaDmlWiFiGetBridgePsmData
 
         memset(recName, 0, sizeof(recName));
         snprintf(recName, sizeof(recName), l2netBridge, bridgeIndex);
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &ssidStrValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &ssidStrValue);
         if ((retPsmGet == CCSP_SUCCESS) && (ssidStrValue != NULL)) {
             char *ssidName = ssidStrValue;
             char *saveptr = NULL;
@@ -7295,7 +7295,7 @@ CosaDmlWiFiGetBridgePsmData
 #else
                             snprintf(recName, sizeof(recName), l2netVlan, bridgeIndex);
 #endif
-                            retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+                            retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
                             if (retPsmGet == CCSP_SUCCESS) {
                                 wifiDbgPrintf("%s: %s returned %s\n", __func__, recName, strValue);
                                 pBridge->VlanId =  _ansc_atoi(strValue);
@@ -7319,14 +7319,14 @@ CosaDmlWiFiGetBridgePsmData
 
                             memset(recName, 0, sizeof(recName));
                             snprintf(recName, sizeof(recName), l2netl3InstanceNum, bridgeIndex);
-                            retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+                            retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
                             if (retPsmGet == CCSP_SUCCESS) {
                                 wifiDbgPrintf("%s: %s returned %s\n", __func__, recName, strValue);
                                 int l3InstanceNum = _ansc_atoi(strValue);
 
                                 memset(recName, 0, sizeof(recName));
                                 snprintf(recName, sizeof(recName), l3netIpAddr, l3InstanceNum);
-                                retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &l3netIpAddrValue);
+                                retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &l3netIpAddrValue);
                                 if (retPsmGet == CCSP_SUCCESS) {
                                     wifiDbgPrintf("%s: %s returned %s\n", __func__, recName, l3netIpAddrValue);
                                     snprintf(pBridge->IpAddress, sizeof(pBridge->IpAddress), "%s", l3netIpAddrValue);
@@ -7337,7 +7337,7 @@ CosaDmlWiFiGetBridgePsmData
 
                                 memset(recName, 0, sizeof(recName));
                                 snprintf(recName, sizeof(recName), l3netIpSubNet, l3InstanceNum);
-                                retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &l3netIpSubNetValue);
+                                retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &l3netIpSubNetValue);
                                 if (retPsmGet == CCSP_SUCCESS) {
                                     wifiDbgPrintf("%s: %s returned %s\n", __func__, recName, l3netIpSubNetValue);
                                     snprintf(pBridge->IpSubNet, sizeof(pBridge->IpSubNet), "%s", l3netIpSubNetValue);
@@ -7371,7 +7371,7 @@ CosaDmlWiFiGetBridgePsmData
                             char *bridgeName;
                             memset(recName, 0, sizeof(recName));
                             snprintf(recName, sizeof(recName), l2netBridgeName, bridgeIndex);
-                            if (PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &bridgeName) == CCSP_SUCCESS) {
+                            if (PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &bridgeName) == CCSP_SUCCESS) {
                                 wifiDbgPrintf("%s: BridgeName  = %s \n", __FUNCTION__, (bridgeName ? bridgeName: "NULL"));
 
                                 // Determine if bridge, ipaddress or subnet changed.  If so flag it and save it
@@ -7522,7 +7522,7 @@ void* Delete_Hotspot_MacFilt_Entries_Thread_Func( void * arg)
 				memset(recName, 0, sizeof(recName));
 				snprintf(recName, sizeof(recName), MacFilterDevice, apIns, pInstNumList[i]);
 
-				retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &device_name);
+				retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &device_name);
 				if (retPsmGet == CCSP_SUCCESS)
 				{
 					if(strcasecmp(HOTSPOT_DEVICE_NAME, device_name)==0)
@@ -7605,12 +7605,12 @@ CosaDmlWiFiCheckPreferPrivateFeature
             if (bEnabled == TRUE)
             {
                 wifi_setApMacAddressControlMode(apIndex, 2);
-                PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "2");
+                PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "2");
             }
             else
             {
                 wifi_setApMacAddressControlMode(apIndex, 0);
-                PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "0");
+                PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "0");
             }
         }
     }
@@ -7623,7 +7623,7 @@ CosaDmlWiFiCheckPreferPrivateFeature
   		memset(recName, 0, sizeof(recName));
     		snprintf(recName, sizeof(recName), MacFilterMode, apIndex);
         	wifi_setApMacAddressControlMode(apIndex-1, 2);
-        	PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "2");
+        	PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "2");
         }
 
     }
@@ -7635,7 +7635,7 @@ CosaDmlWiFiCheckPreferPrivateFeature
                 memset(recName, 0, sizeof(recName));
                 snprintf(recName, sizeof(recName), MacFilterMode, apIndex);
                 wifi_setApMacAddressControlMode(apIndex-1, 0);
-                PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "0");
+                PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "0");
 
     	}
 	//Delete_Hotspot_MacFilt_Entries();
@@ -7713,7 +7713,7 @@ ANSC_STATUS CosaDmlWiFiCheckEnableRadiusGreylist(BOOL* pbEnabled) {
                 memset(recName, 0, sizeof(recName));
                 snprintf(recName, sizeof(recName), MacFilterMode, apIndex + 1);
                 wifi_setApMacAddressControlMode(apIndex + 1, 2);
-                PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "2");
+                PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "2");
             }
         }
 #else
@@ -7722,7 +7722,7 @@ ANSC_STATUS CosaDmlWiFiCheckEnableRadiusGreylist(BOOL* pbEnabled) {
             memset(recName, 0, sizeof(recName));
             snprintf(recName, sizeof(recName), MacFilterMode, apIndex);
             wifi_setApMacAddressControlMode(Hotspot_Index[index], 2);
-            PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "2");
+            PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "2");
         }
 #endif
         wifi_enableGreylistAccessControl(bEnabled);
@@ -8028,7 +8028,7 @@ CosaDmlWiFiFactoryReset
         memset(recName, 0, sizeof(recName));
         snprintf(recName, sizeof(recName), FactoryResetSSID, i);
 		CcspWifiTrace(("RDK_LOG_WARN,WIFI %s PSM GET for FactoryResetSSID \n",__FUNCTION__));
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
         if (retPsmGet == CCSP_SUCCESS)
         {
             resetSSID[i-1] = atoi(strValue);
@@ -8140,7 +8140,7 @@ CosaDmlWiFiFactoryReset
             {
                 ERR_CHK(rc);
             }
-            PSM_Set_Record_Value2(bus_handle,g_Subsystem, WifiVlanCfgVersion, ccsp_string, verString);
+            PSM_Set_Record_Value2(bus_handle, NULL, WifiVlanCfgVersion, ccsp_string, verString);
             if (g_wifidb_rfc) {
                 struct schema_Wifi_Global_Config *pcfg = NULL;
                 pcfg = (struct schema_Wifi_Global_Config  *) wifi_db_get_table_entry(NULL, NULL,&table_Wifi_Global_Config,OCLM_UUID);
@@ -8225,7 +8225,7 @@ CosaDmlWiFiFactoryReset
     {
         snprintf(recName, sizeof(recName), FactoryResetSSID, i);
         // Reset to 0
-        PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "0");
+        PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "0");
     }
 
 #if defined(_PUMA6_ATOM_)
@@ -8310,7 +8310,7 @@ CosaDmlWiFiFactoryReset
 #endif
     // Set FixedWmmParams to TRUE on Factory Reset so that we won't override the data.
     // There were two required changes.  Set to 3 so that we know neither needs to be applied
-    PSM_Set_Record_Value2(bus_handle,g_Subsystem, FixedWmmParams, ccsp_string, "3");
+    PSM_Set_Record_Value2(bus_handle, NULL, FixedWmmParams, ccsp_string, "3");
     /*CcspWifiEventTrace(("RDK_LOG_NOTICE, KeyPassphrase changed in Factory Reset\n"));*/
     if (g_wifidb_rfc) {
         struct schema_Wifi_Global_Config *pcfg = NULL;
@@ -8465,7 +8465,7 @@ static void CosaDmlWiFiCheckWmmParams
 printf("%s \n",__FUNCTION__);
 
     // if the value is FALSE or not present WmmNoAck values should be reset
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, FixedWmmParams, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, FixedWmmParams, NULL, &strValue);
     if (!g_wifidb_rfc) {
     if (retPsmGet == CCSP_SUCCESS) {
         int value = atoi(strValue);
@@ -8503,7 +8503,7 @@ printf("%s \n",__FUNCTION__);
 #endif
             memset(recName, 0, sizeof(recName));
             snprintf(recName, sizeof(recName), WmmEnable, i+1);
-            PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "1");
+            PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "1");
             
             memset(recName, 0, sizeof(recName));
 #if defined(ENABLE_FEATURE_MESHWIFI)
@@ -8514,21 +8514,21 @@ printf("%s \n",__FUNCTION__);
             if (i == 12 || i == 13) {
 #endif
                 snprintf(recName, sizeof(recName), UAPSDEnable, i+1);
-                PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "0");
+                PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "0");
             } else {
                 snprintf(recName, sizeof(recName), UAPSDEnable, i+1);
-                PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "1");
+                PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "1");
             }
 #else
             snprintf(recName, sizeof(recName), UAPSDEnable, i+1);
-            PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "1");
+            PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "1");
 #endif
             // For Backwards compatibility with 1.3 versions, the PSM value for NoAck must be 1
             // When set/get from the PSM to DML the value must be interperted to the opposite
             // 1->0 and 0->1
             memset(recName, 0, sizeof(recName));
             snprintf(recName, sizeof(recName), WmmNoAck, i+1);
-            PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "1");
+            PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "1");
              if (g_wifidb_rfc) {
                 pcfg = (struct schema_Wifi_VAP_Config  *) wifi_db_get_table_entry(vap_names[i], "vap_name",&table_Wifi_VAP_Config,OCLM_STR);
                 if (pcfg != NULL) {
@@ -8550,7 +8550,7 @@ printf("%s \n",__FUNCTION__);
     }
 
     // Set FixedWmmParams to TRUE so that we won't override the data again.
-    PSM_Set_Record_Value2(bus_handle,g_Subsystem, FixedWmmParams, ccsp_string, "3");
+    PSM_Set_Record_Value2(bus_handle, NULL, FixedWmmParams, ccsp_string, "3");
     if (g_wifidb_rfc) {
         struct schema_Wifi_Global_Config *pcfg = NULL;
         pcfg = (struct schema_Wifi_Global_Config  *) wifi_db_get_table_entry(NULL, NULL,&table_Wifi_Global_Config,OCLM_UUID);
@@ -8592,7 +8592,7 @@ static void CosaDmlWiFiCheckSecurityParams
         if (wpsPin == 0)
         {
             unsigned int password = 0;
-            retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, WpsPin, NULL, &strValue);
+            retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, WpsPin, NULL, &strValue);
             if (retPsmGet == CCSP_SUCCESS)
             {
                 password = _ansc_atoi(strValue);
@@ -8607,7 +8607,7 @@ static void CosaDmlWiFiCheckSecurityParams
         {
             memset(recName, 0, sizeof(recName));
             sprintf(recName, Passphrase, wlanIndex+1);
-            retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+            retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
             if (retPsmGet == CCSP_SUCCESS)
             {
                 wlan_setKeyPassphrase(wlanIndex, strValue);
@@ -8699,7 +8699,7 @@ BOOL IsValidMacfilter(int AccessPointIndex, int MacfilterInstance)
     BOOL valid = FALSE;
 
     snprintf(recName, sizeof(recName), MacFilter, AccessPointIndex, MacfilterInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &MacFilterParam);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &MacFilterParam);
     if ((retPsmGet == CCSP_SUCCESS) && (MacFilterParam) && (strlen(MacFilterParam) > 0))
     {
         if (Validate_mac(MacFilterParam))
@@ -8732,7 +8732,7 @@ int RemoveInvalidMacFilterList(int ulinstance)
     int retpsmset = CCSP_SUCCESS;
 
     snprintf(recname, sizeof(recname), MacFilterList, ulinstance);
-    retpsmget = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recname, NULL, &macfilterlistparam);
+    retpsmget = PSM_Get_Record_Value2(bus_handle, NULL, recname, NULL, &macfilterlistparam);
     /*
      * RDKB3939-878
      * Logic:
@@ -8817,7 +8817,7 @@ int RemoveInvalidMacFilterList(int ulinstance)
             }
             CcspTraceInfo(("updated AP %d MacFilterList val--> %s\n",ulinstance,newbuf));
             snprintf(recname, sizeof(recname), MacFilterList, ulinstance);
-            retpsmset = PSM_Set_Record_Value2(bus_handle, g_Subsystem, recname, ccsp_string, newbuf);
+            retpsmset = PSM_Set_Record_Value2(bus_handle, NULL, recname, ccsp_string, newbuf);
             if (retpsmset != CCSP_SUCCESS)
             {
                 CcspTraceWarning(("MacFilterList set status %d\n",retpsmset));
@@ -8896,7 +8896,7 @@ static ANSC_STATUS getRadiusAuthInterval (int index, UINT *radiusInterval)
 
     snprintf(recName, sizeof(recName), AuthInterval , index+1);
 
-    retVal = PSM_Get_Record_Value2( bus_handle, g_Subsystem, recName , NULL, &strValue );
+    retVal = PSM_Get_Record_Value2(bus_handle, NULL, recName , NULL, &strValue );
 
     if (retVal != CCSP_SUCCESS)
     {
@@ -8920,7 +8920,7 @@ static ANSC_STATUS setRadiusAuthIntervalintoPSM (int index, UINT val)
     snprintf(recName, sizeof(recName), AuthInterval , index+1);
     snprintf(strValue, sizeof(strValue), "%u", val);
 
-    retVal = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName , ccsp_string, strValue);
+    retVal = PSM_Set_Record_Value2(bus_handle, NULL, recName , ccsp_string, strValue);
 
     if(retVal != CCSP_SUCCESS)
     {
@@ -8995,7 +8995,7 @@ printf("%s: Calling CosaDmlWiFiFactoryReset \n",__FUNCTION__);
 	CosaDmlWiFiFactoryReset();
 printf("%s: Called CosaDmlWiFiFactoryReset \n",__FUNCTION__);
         // Set to FALSE after FactoryReset has been applied
-	PSM_Set_Record_Value2(bus_handle,g_Subsystem, FactoryReset, ccsp_string, "0");
+	PSM_Set_Record_Value2(bus_handle, NULL, FactoryReset, ccsp_string, "0");
 printf("%s: Reset FactoryReset to 0 \n",__FUNCTION__);
     }
 #endif //WIFI_HAL_VERSION_3
@@ -9016,7 +9016,7 @@ printf("%s: Reset FactoryReset to 0 \n",__FUNCTION__);
             init_ovsdb_tables();
        #endif
 
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-PSM-DB.Enable", NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-PSM-DB.Enable", NULL, &strValue);
         if (retPsmGet == CCSP_SUCCESS) {
             g_wifidb_rfc = _ansc_atoi(strValue);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -9068,7 +9068,7 @@ printf("%s: Reset FactoryReset to 0 \n",__FUNCTION__);
             for (i = 1; i <= gRadioCount; i++) {
 #endif
                 snprintf(recName, sizeof(recName), BssHotSpot, i);
-                PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "0");
+                PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "0");
                 if (g_wifidb_rfc) {
                     struct schema_Wifi_VAP_Config  *pcfg= NULL;
 
@@ -9180,7 +9180,7 @@ printf("%s: Reset FactoryReset to 0 \n",__FUNCTION__);
             {
                 ERR_CHK(rc);
             }
-            PSM_Set_Record_Value2(bus_handle,g_Subsystem, WifiVlanCfgVersion, ccsp_string, verString);
+            PSM_Set_Record_Value2(bus_handle, NULL, WifiVlanCfgVersion, ccsp_string, verString);
             if (g_wifidb_rfc) {
                 struct schema_Wifi_Global_Config *pcfg = NULL;
                 pcfg = (struct schema_Wifi_Global_Config  *) wifi_db_get_table_entry(NULL, NULL,&table_Wifi_Global_Config,OCLM_UUID);
@@ -9340,7 +9340,7 @@ CosaDmlWiFiRegionInit
     memset(PWiFiRegion->Code.ActiveValue, 0, sizeof(PWiFiRegion->Code.ActiveValue));
 
     if (!g_wifidb_rfc) {
-    if (PSM_Get_Record_Value2(bus_handle, g_Subsystem, TR181_WIFIREGION_Code, NULL, &strValue) != CCSP_SUCCESS)
+    if (PSM_Get_Record_Value2(bus_handle, NULL, TR181_WIFIREGION_Code, NULL, &strValue) != CCSP_SUCCESS)
     {
         rc = strcpy_s(PWiFiRegion->Code.ActiveValue, sizeof(PWiFiRegion->Code.ActiveValue) , "USI");
         ERR_CHK(rc);
@@ -9368,7 +9368,7 @@ CosaDmlWiFiRegionInit
     memset(PWiFiRegion->Code, 0, sizeof(PWiFiRegion->Code));
 
     if (!g_wifidb_rfc) {
-    if (PSM_Get_Record_Value2(bus_handle, g_Subsystem, TR181_WIFIREGION_Code, NULL, &strValue) != CCSP_SUCCESS)
+    if (PSM_Get_Record_Value2(bus_handle, NULL, TR181_WIFIREGION_Code, NULL, &strValue) != CCSP_SUCCESS)
     {
         rc = strcpy_s(PWiFiRegion->Code, sizeof(PWiFiRegion->Code) , "USI");
         ERR_CHK(rc);
@@ -9403,7 +9403,7 @@ CosaDmlWiFi_PsmSaveRegionCode(char *code)
     int retPsmGet = CCSP_SUCCESS;
     int rc = -1;
      /* Updating the WiFiRegion Code in PSM database  */
-    retPsmGet = PSM_Set_Record_Value2(bus_handle, g_Subsystem, TR181_WIFIREGION_Code, ccsp_string, code);
+    retPsmGet = PSM_Set_Record_Value2(bus_handle, NULL, TR181_WIFIREGION_Code, ccsp_string, code);
     if (retPsmGet != CCSP_SUCCESS) 
 	{
         CcspTraceError(("Set failed for WiFiRegion Code \n"));
@@ -9524,7 +9524,7 @@ CosaDmlWiFiPsmDelMacFilterTable( ULONG ulInstance )
 wifiDbgPrintf("%s ulInstance = %lu\n",__FUNCTION__, ulInstance);
 
     snprintf(recName, sizeof(recName),MacFilterList, ulInstance);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         int numFilters = 0;
         int macInstance = 0;
@@ -9604,7 +9604,7 @@ static void *CosaDmlWiFiFactoryResetThread(void *arg)
     pthread_mutex_lock(&sWiFiThreadMutex);
     printf("%s Called pthread_mutex_lock for sWiFiThreadMutex  %d \n",__FUNCTION__ , __LINE__ ); 
 
-    PSM_Set_Record_Value2(bus_handle,g_Subsystem, ReloadConfig, ccsp_string, "TRUE");
+    PSM_Set_Record_Value2(bus_handle, NULL, ReloadConfig, ccsp_string, "TRUE");
 
     wifiDbgPrintf("%s Calling Initialize() \n",__FUNCTION__);
 
@@ -9637,11 +9637,11 @@ static void *CosaDmlWiFiFactoryResetRadioAndApThread(void *arg)
 #endif
     pthread_mutex_lock(&sWiFiThreadMutex);
 
-    PSM_Set_Record_Value2(bus_handle,g_Subsystem, ReloadConfig, ccsp_string, "TRUE");
+    PSM_Set_Record_Value2(bus_handle, NULL, ReloadConfig, ccsp_string, "TRUE");
 
     /*Setting ReloadConfig PSM to TRUE will set the FactoryReset as 1. we dont need to
      * do FR for all the Radios & APs. So, setting FactoryReset record to 0. */
-    PSM_Set_Record_Value2(bus_handle,g_Subsystem, FactoryReset, ccsp_string, "0");
+    PSM_Set_Record_Value2(bus_handle, NULL, FactoryReset, ccsp_string, "0");
 
     pMyObject = (PCOSA_DATAMODEL_WIFI)g_pCosaBEManager->hWifi;
 
@@ -9770,7 +9770,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__,g_Subsystem);
     if (!g_wifidb_rfc) {
         memset(recName, 0, sizeof(recName));
         snprintf(recName, sizeof(recName), UserControl, i);
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     } else {
         struct schema_Wifi_Radio_Config  *pcfg= NULL;
         char radio_name[16] = {0};
@@ -9790,7 +9790,7 @@ printf("%s g_Subsytem = %s\n",__FUNCTION__,g_Subsystem);
 printf("%s: resetSSID[%d] = %d \n", __FUNCTION__, i-1,  resetSSID[i-1]);
             memset(recName, 0, sizeof(recName));
             snprintf(recName, sizeof(recName), FactoryResetSSID, i);
-            PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+            PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
         } 
     }    
@@ -9980,12 +9980,12 @@ CosaDmlWiFi_GetPreferPrivatePsmData(BOOL *value)
             *value = TRUE;
         } /*Handle set case here*/
     } else {
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, PreferPrivate, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, PreferPrivate, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         *value = _ansc_atoi(strValue);
         CcspWifiTrace(("RDK_LOG_WARN,%s-%d Enable PreferPrivate is %d\n",__FUNCTION__,__LINE__,*value));
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, PreferPrivate_configured, NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, PreferPrivate_configured, NULL, &strValue);
         if (retPsmGet == CCSP_SUCCESS)
           {
           ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -9999,12 +9999,12 @@ CosaDmlWiFi_GetPreferPrivatePsmData(BOOL *value)
                 ERR_CHK(rc);
             }
              CcspWifiTrace(("RDK_LOG_WARN,%s-%d Disable PreferPrivate by default\n",__FUNCTION__,__LINE__));
-             retPsmGet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, PreferPrivate, ccsp_string, str);
+             retPsmGet = PSM_Set_Record_Value2(bus_handle, NULL, PreferPrivate, ccsp_string, str);
              if (retPsmGet != CCSP_SUCCESS) {
                 CcspWifiTrace(("RDK_LOG_WARN,%s PSM_Set_Record_Value2 returned error %d while setting %s \n",__FUNCTION__, retPsmGet, PreferPrivate));
              return ANSC_STATUS_FAILURE;
              }
-             retPsmGet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, PreferPrivate_configured, ccsp_string, str);
+             retPsmGet = PSM_Set_Record_Value2(bus_handle, NULL, PreferPrivate_configured, ccsp_string, str);
              if (retPsmGet != CCSP_SUCCESS) {
                 CcspWifiTrace(("RDK_LOG_WARN,%s PSM_Set_Record_Value2 returned error %d while setting %s \n",__FUNCTION__, retPsmGet, PreferPrivate_configured));
                 return ANSC_STATUS_FAILURE;
@@ -10022,12 +10022,12 @@ CosaDmlWiFi_GetPreferPrivatePsmData(BOOL *value)
             ERR_CHK(rc);
         }
         CcspWifiTrace(("RDK_LOG_WARN,%s Disable PreferPrivate by default\n",__FUNCTION__));
-        retPsmGet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, PreferPrivate, ccsp_string, str);
+        retPsmGet = PSM_Set_Record_Value2(bus_handle, NULL, PreferPrivate, ccsp_string, str);
         if (retPsmGet != CCSP_SUCCESS) {
            CcspWifiTrace(("RDK_LOG_WARN,%s PSM_Set_Record_Value2 returned error %d while setting %s \n",__FUNCTION__, retPsmGet, PreferPrivate));
            return ANSC_STATUS_FAILURE;
         }
-        retPsmGet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, PreferPrivate_configured, ccsp_string, str);
+        retPsmGet = PSM_Set_Record_Value2(bus_handle, NULL, PreferPrivate_configured, ccsp_string, str);
         if (retPsmGet != CCSP_SUCCESS) {
            CcspWifiTrace(("RDK_LOG_WARN,%s PSM_Set_Record_Value2 returned error %d while setting %s \n",__FUNCTION__, retPsmGet, PreferPrivate_configured));
            return ANSC_STATUS_FAILURE;
@@ -10079,7 +10079,7 @@ CosaDmlWiFi_SetPreferPrivatePsmData(BOOL value,BOOL init_flag)
     {
         ERR_CHK(rc);
     }
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, PreferPrivate, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, PreferPrivate, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
         CcspWifiTrace(("RDK_LOG_INFO,%s PSM_Set_Record_Value2 returned error %d while setting %s \n",__FUNCTION__, retPsmSet, PreferPrivate));
         return ANSC_STATUS_FAILURE;
@@ -10113,7 +10113,7 @@ CosaDmlWiFi_SetPreferPrivatePsmData(BOOL value,BOOL init_flag)
             if (value == TRUE)
             {
                 wifi_setApMacAddressControlMode(apIndex, 2);
-                PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "2");
+                PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "2");
             }
             else
             {
@@ -10122,7 +10122,7 @@ CosaDmlWiFi_SetPreferPrivatePsmData(BOOL value,BOOL init_flag)
 #endif
                 if (pRadius_greylist_Enabled == FALSE) {
                     wifi_setApMacAddressControlMode(apIndex, 0);
-                    PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "0");
+                    PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "0");
                 }
             }
         }
@@ -10139,7 +10139,7 @@ CosaDmlWiFi_SetPreferPrivatePsmData(BOOL value,BOOL init_flag)
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), MacFilterMode, apIndex);
     wifi_setApMacAddressControlMode(apIndex-1, 2);
-    PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "2");
+    PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "2");
     }
 
    }
@@ -10156,7 +10156,7 @@ CosaDmlWiFi_SetPreferPrivatePsmData(BOOL value,BOOL init_flag)
     		snprintf(recName, sizeof(recName), MacFilterMode, apIndex);
 		if (pRadius_greylist_Enabled == FALSE ) {
 			wifi_setApMacAddressControlMode(apIndex-1, 0);
-			PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "0");
+			PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "0");
 		}
     }
     
@@ -10227,7 +10227,7 @@ void CosaDmlWiFiGetEnableRadiusGreylist(BOOLEAN *pbEnableRadiusGreyList)
     *pbEnableRadiusGreyList = FALSE;
     CcspTraceInfo(("[%s] Get EnableRadiusGreylist Value \n",__FUNCTION__));
 
-    if (PSM_Get_Record_Value2(bus_handle, g_Subsystem,
+    if (PSM_Get_Record_Value2(bus_handle, NULL,
             "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.RadiusGreyList.Enable",
             NULL, &psmStrValue) == CCSP_SUCCESS)
     {
@@ -10277,7 +10277,7 @@ CosaDmlWiFiSetEnableRadiusGreylist(BOOLEAN value) {
                 memset(recName, 0, sizeof(recName));
                 snprintf(recName, sizeof(recName),MacFilterMode, apIndex+1);
                 wifi_setApMacAddressControlMode(apIndex, 2);
-                PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "2");
+                PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "2");
             }
         }
 #else
@@ -10289,7 +10289,7 @@ CosaDmlWiFiSetEnableRadiusGreylist(BOOLEAN value) {
                 ERR_CHK(rc);
             }
             wifi_setApMacAddressControlMode(apIndex-1, 2);
-            PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "2");
+            PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "2");
         }
 #endif
 	wifi_enableGreylistAccessControl(value);
@@ -10328,8 +10328,7 @@ ANSC_STATUS CosaDmlWiFiGetvAPStatsFeatureEnable(BOOLEAN *pbValue)
     sWiFiDmlvApStatsFeatureEnableCfg = TRUE;
 
     if (!g_wifidb_rfc) {
-    if (CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,
-                g_Subsystem, WiFivAPStatsFeatureEnable, NULL, &strValue))
+    if (CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, WiFivAPStatsFeatureEnable, NULL, &strValue))
     {
         if (0 == strcmp(strValue, "true"))
         {
@@ -10365,8 +10364,7 @@ ANSC_STATUS CosaDmlWiFiGetTxOverflowSelfheal(BOOLEAN *pbValue)
     *pbValue = FALSE;
 
     if (!g_wifidb_rfc) { 
-    if (CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,
-                g_Subsystem, WiFiTxOverflowSelfheal, NULL, &strValue))
+    if (CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, WiFiTxOverflowSelfheal, NULL, &strValue))
     {
         if(((strcmp (strValue, "true") == 0)) || (strcmp (strValue, "TRUE") == 0)){
             *pbValue = TRUE;
@@ -10392,8 +10390,7 @@ ANSC_STATUS CosaDmlWiFiSetTxOverflowSelfheal(BOOLEAN bValue)
 
     snprintf(recValue, sizeof(recValue), "%s", (bValue ? "true" : "false"));
 
-    if (CCSP_SUCCESS == PSM_Set_Record_Value2(bus_handle,
-            g_Subsystem, WiFiTxOverflowSelfheal, ccsp_string, recValue))
+    if (CCSP_SUCCESS == PSM_Set_Record_Value2(bus_handle, NULL, WiFiTxOverflowSelfheal, ccsp_string, recValue))
     {
         return ANSC_STATUS_SUCCESS;
     }
@@ -10469,7 +10466,7 @@ ANSC_STATUS CosaDmlWiFiSetDFS(BOOLEAN bValue)
     }
 
     char *strValue = NULL;
-    if (PSM_Get_Record_Value2(bus_handle, g_Subsystem,
+    if (PSM_Get_Record_Value2(bus_handle, NULL,
         "Device.WiFi.Radio.2.X_COMCAST_COM_DFSEnable",
         NULL, &strValue) == CCSP_SUCCESS)
     {
@@ -10477,7 +10474,7 @@ ANSC_STATUS CosaDmlWiFiSetDFS(BOOLEAN bValue)
             char dfsValue[10];
             memset(dfsValue, 0, sizeof(dfsValue));
             sprintf(dfsValue, "%d", bValue);
-            if(PSM_Set_Record_Value2(bus_handle, g_Subsystem,
+            if(PSM_Set_Record_Value2(bus_handle, NULL,
                "Device.WiFi.Radio.2.X_COMCAST_COM_DFSEnable", ccsp_string, dfsValue) != CCSP_SUCCESS)
                CcspWifiTrace(("RDK_LOG_INFO, PSM Set Error !!!\n"));
         }
@@ -10544,7 +10541,7 @@ ANSC_STATUS CosaDmlWiFiGetDFS(BOOLEAN *pbValue)
 
     *pbValue = FALSE;
 
-    if (PSM_Get_Record_Value2(bus_handle, g_Subsystem,
+    if (PSM_Get_Record_Value2(bus_handle, NULL,
         "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.DFS.Enable",
         NULL, &strValue) == CCSP_SUCCESS)
     {
@@ -10590,7 +10587,7 @@ ANSC_STATUS CosaDmlWiFiGetDFSAtBootUp(BOOLEAN *pbValue)
 
     *pbValue = FALSE;
 
-    if (PSM_Get_Record_Value2(bus_handle, g_Subsystem,
+    if (PSM_Get_Record_Value2(bus_handle, NULL,
             "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.DFSatBootUp.Enable",
             NULL, &psmStrValue) == CCSP_SUCCESS)
     {
@@ -10659,8 +10656,7 @@ ANSC_STATUS CosaDmlWiFiGetForceDisableWiFiRadio(BOOLEAN *pbValue)
     return ANSC_STATUS_SUCCESS;
 #else
     if (!g_wifidb_rfc) {
-    if (CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,
-                g_Subsystem, WiFiForceDisableWiFiRadio, NULL, &strValue))
+    if (CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, WiFiForceDisableWiFiRadio, NULL, &strValue))
     {
         if(((strcmp (strValue, "true") == 0)) || (strcmp (strValue, "TRUE") == 0)){
             *pbValue = TRUE;
@@ -10757,8 +10753,7 @@ ANSC_STATUS CosaDmlWiFiSetForceDisableWiFiRadio(BOOLEAN bValue)
         }
 #endif
         snprintf(PreValue, sizeof(PreValue), "%d",radioStatus);
-        if (CCSP_SUCCESS != PSM_Set_Record_Value2(bus_handle,
-                g_Subsystem, WiFiForceDisableRadioStatus, ccsp_string, PreValue))
+        if (CCSP_SUCCESS != PSM_Set_Record_Value2(bus_handle, NULL, WiFiForceDisableRadioStatus, ccsp_string, PreValue))
         {
             if (pcfg != NULL) {
                 free(pcfg);
@@ -10781,7 +10776,7 @@ ANSC_STATUS CosaDmlWiFiSetForceDisableWiFiRadio(BOOLEAN bValue)
            status has been maintained to restore those values. */
 
         if (!g_wifidb_rfc) {
-        if (CCSP_SUCCESS != PSM_Get_Record_Value2(bus_handle,g_Subsystem, WiFiForceDisableRadioStatus, NULL, &strValue))
+        if (CCSP_SUCCESS != PSM_Get_Record_Value2(bus_handle, NULL, WiFiForceDisableRadioStatus, NULL, &strValue))
         {
             if (pcfg != NULL) {
                 free(pcfg);
@@ -10819,8 +10814,7 @@ ANSC_STATUS CosaDmlWiFiSetForceDisableWiFiRadio(BOOLEAN bValue)
        {
             ERR_CHK(rc);
        }
-       if (CCSP_SUCCESS != PSM_Set_Record_Value2(bus_handle,
-               g_Subsystem, WiFiForceDisableRadioStatus, ccsp_string, PreValue))
+       if (CCSP_SUCCESS != PSM_Set_Record_Value2(bus_handle, NULL, WiFiForceDisableRadioStatus, ccsp_string, PreValue))
        {
            return ANSC_STATUS_FAILURE;
        }
@@ -10835,8 +10829,7 @@ ANSC_STATUS CosaDmlWiFiSetForceDisableWiFiRadio(BOOLEAN bValue)
             }
         }
     }
-    if (CCSP_SUCCESS == PSM_Set_Record_Value2(bus_handle,
-            g_Subsystem, WiFiForceDisableWiFiRadio, ccsp_string, recValue))
+    if (CCSP_SUCCESS == PSM_Set_Record_Value2(bus_handle, NULL, WiFiForceDisableWiFiRadio, ccsp_string, recValue))
     {
 #if !defined(_PUMA6_ATOM_)
         wifi_apply();
@@ -10890,7 +10883,7 @@ void CosaDmlWiFiGetHostapdAuthenticatorEnable(BOOLEAN *pbEnableHostapdAuthentica
     *pbEnableHostapdAuthenticator = FALSE;
     CcspTraceInfo(("[%s] Get DisableNativeHostapd Value \n",__FUNCTION__));
 
-    if (PSM_Get_Record_Value2(bus_handle, g_Subsystem,
+    if (PSM_Get_Record_Value2(bus_handle, NULL,
             "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Control.DisableNativeHostapd",
             NULL, &psmStrValue) == CCSP_SUCCESS)
     {
@@ -10952,8 +10945,7 @@ BOOL CosaDmlWiFiSetHostapdAuthenticatorEnable(PANSC_HANDLE phContext, BOOLEAN bV
     char recValue[16] = {0};
 
     sprintf(recValue, "%d", bValue);
-    if (CCSP_SUCCESS == PSM_Set_Record_Value2(bus_handle, g_Subsystem,
-    			    WiFiEnableHostapdAuthenticator, ccsp_string, recValue))
+    if (CCSP_SUCCESS == PSM_Set_Record_Value2(bus_handle, NULL, WiFiEnableHostapdAuthenticator, ccsp_string, recValue))
     {
         CcspWifiTrace(("RDK_LOG_WARN,WIFI %s : PSM Set success\n",__FUNCTION__ ));
 #if defined (_XB7_PRODUCT_REQ_)
@@ -11271,8 +11263,7 @@ ANSC_STATUS CosaDmlWiFiSetvAPStatsFeatureEnable(BOOLEAN bValue)
 
     snprintf(recValue, sizeof(recValue), "%s", (bValue ? "true" : "false"));
 
-    if (CCSP_SUCCESS == PSM_Set_Record_Value2(bus_handle,
-            g_Subsystem, WiFivAPStatsFeatureEnable, ccsp_string, recValue))
+    if (CCSP_SUCCESS == PSM_Set_Record_Value2(bus_handle, NULL, WiFivAPStatsFeatureEnable, ccsp_string, recValue))
     {
         sWiFiDmlvApStatsFeatureEnableCfg = bValue;
         wifi_stats_flag_change(0, bValue, 0);
@@ -11674,7 +11665,7 @@ fprintf(stderr, "-- %s %lu %lu %lu %lu\n", __func__,  radioIndex,   radioIndex_2
         if(attrp != NULL)
                 pthread_attr_destroy( attrp );
 #ifdef CISCO_XB3_PLATFORM_CHANGES
-            retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, NotifyWiFiChanges, ccsp_string,"true");
+            retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, NotifyWiFiChanges, ccsp_string,"true");
  
         if (retPsmSet == CCSP_SUCCESS) {
                 CcspWifiTrace(("RDK_LOG_INFO,CaptivePortal:%s - PSM set of NotifyWiFiChanges success ...\n",__FUNCTION__));
@@ -11685,7 +11676,7 @@ fprintf(stderr, "-- %s %lu %lu %lu %lu\n", __func__,  radioIndex,   radioIndex_2
         }
  
             printf("%s, Setting factory reset after migration parameter in PSM \n",__FUNCTION__);
-         retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, WiFiRestored_AfterMigration, ccsp_string,"true");
+         retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, WiFiRestored_AfterMigration, ccsp_string,"true");
  
         if (retPsmSet == CCSP_SUCCESS) {
                 CcspWifiTrace(("RDK_LOG_INFO,CaptivePortal:%s - PSM set of WiFiRestored_AfterMigration success ...\n",__FUNCTION__));
@@ -11695,7 +11686,7 @@ fprintf(stderr, "-- %s %lu %lu %lu %lu\n", __func__,  radioIndex,   radioIndex_2
                 CcspWifiTrace(("RDK_LOG_ERROR,CaptivePortal:%s - PSM set of WiFiRestored_AfterMigration failed and ret value is %d...\n",__FUNCTION__,retPsmSet));
         }
 #else
-            PSM_Set_Record_Value2(bus_handle,g_Subsystem, NotifyWiFiChanges, ccsp_string,"true");
+            PSM_Set_Record_Value2(bus_handle, NULL, NotifyWiFiChanges, ccsp_string,"true");
 #endif
         if (g_wifidb_rfc) {
             struct schema_Wifi_Global_Config *pcfg = NULL;
@@ -16135,7 +16126,7 @@ wifiDbgPrintf("%s\n",__FUNCTION__);
          {
              snprintf(paramName, sizeof(paramName), SsidLowerLayers, pCfg->InstanceNumber);
 
-             if (PSM_Set_Record_Value2(bus_handle,g_Subsystem, paramName, ccsp_string, (char*)pLowerLayer) != CCSP_SUCCESS)
+             if (PSM_Set_Record_Value2(bus_handle, NULL, paramName, ccsp_string, (char*)pLowerLayer) != CCSP_SUCCESS)
              {
                  CcspWifiTrace(("RDK_LOG_ERROR,WIFI %s : PSM Set failed for %s\n",__FUNCTION__, paramName));
              }
@@ -16680,7 +16671,7 @@ CosaDmlWiFiSsidGetCfg
 
         // Need to check for Primary and guest except hotspot
         snprintf(rec, sizeof(rec), BssHotSpot, pCfg->InstanceNumber);
-        if (PSM_Get_Record_Value2(bus_handle, g_Subsystem, rec, NULL, &sval) == CCSP_SUCCESS)
+        if (PSM_Get_Record_Value2(bus_handle, NULL, rec, NULL, &sval) == CCSP_SUCCESS)
         {
             BOOL bValue = (atoi(sval) == 1) ? FALSE : TRUE;
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(sval);
@@ -17058,7 +17049,7 @@ BOOL CosaDmlWiFiSsidValidateSSID (void)
 	CcspWifiTrace(("RDK_LOG_WARN,WIFI %s Calling PSM GET\n",__FUNCTION__));
 
         if (!g_wifidb_rfc) {
-	retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, ValidateSSIDName, NULL, &strValue);
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, ValidateSSIDName, NULL, &strValue);
 	if (retPsmGet == CCSP_SUCCESS) {
 		CcspWifiTrace(("RDK_LOG_INFO,WIFI %s : PSG GET Success \n",__FUNCTION__));
         validateFlag = _ansc_atoi(strValue);
@@ -17561,8 +17552,7 @@ ANSC_STATUS CosaDmlWiFiApGetStatsEnable(UINT InstanceNumber, BOOLEAN *pbValue)
     sWiFiDmlApStatsEnableCfg[InstanceNumber - 1] = FALSE;
 
     if (!g_wifidb_rfc) {
-    if (CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,
-            g_Subsystem, recName, NULL, &strValue))
+    if (CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue))
     {
         if (0 == strcmp(strValue, "true"))
         {
@@ -17595,8 +17585,7 @@ ANSC_STATUS CosaDmlWiFiApSetStatsEnable(UINT InstanceNumber, BOOLEAN bValue)
 
     snprintf(recName, sizeof(recName), vAPStatsEnable, InstanceNumber);
     snprintf(recValue, sizeof(recValue), "%s", (bValue ? "true" : "false"));
-    if (CCSP_SUCCESS == PSM_Set_Record_Value2(bus_handle,
-            g_Subsystem, recName, ccsp_string, recValue))
+    if (CCSP_SUCCESS == PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, recValue))
     {
         sWiFiDmlApStatsEnableCfg[InstanceNumber - 1] = bValue;
         wifi_stats_flag_change(InstanceNumber-1, bValue, 1);
@@ -17629,8 +17618,7 @@ ANSC_STATUS CosaDmlWiFiSetShowCredential(INT radioInstanceNumber, BOOLEAN bValue
     char record[256]="";
 
     sprintf(record, WiFiShowCredential, radioInstanceNumber);
-    if (CCSP_SUCCESS == PSM_Set_Record_Value2(bus_handle,
-            g_Subsystem, record, ccsp_string, recValue))
+    if (CCSP_SUCCESS == PSM_Set_Record_Value2(bus_handle, NULL, record, ccsp_string, recValue))
     {
         return ANSC_STATUS_SUCCESS;
     }
@@ -17648,8 +17636,7 @@ ANSC_STATUS CosaDmlWiFiGetShowCredential(INT radioInstanceNumber, BOOLEAN *pbVal
 
     sprintf(record, WiFiShowCredential, radioInstanceNumber);
 
-    if (CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,
-                g_Subsystem, record, NULL, &strValue))
+    if (CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, record, NULL, &strValue))
     {
         if (0 == strcmp(strValue, "true"))
         {
@@ -18616,14 +18603,14 @@ wifiDbgPrintf("%s pSsid = %s\n",__FUNCTION__, pSsid);
                 if (!g_wifidb_rfc) {
 		memset(recName, 0, sizeof(recName));
 		snprintf(recName, sizeof(recName), WepKeyLength, wlanIndex+1);
-		retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+		retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
 		if (retPsmGet == CCSP_SUCCESS) {
 			wepLen = _ansc_atoi(strValue);
                         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
 		} else {
 				// Default to 128
 				wepLen = 128;
-			PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "128" );
+			PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "128" );
 			}
                 } else {
                     struct schema_Wifi_VAP_Config  *pcfg= NULL;
@@ -19002,12 +18989,12 @@ wifiDbgPrintf("%s\n",__FUNCTION__);
             sprintf(recName, WepKeyLength, wlanIndex+1);
             if (pCfg->ModeEnabled == COSA_DML_WIFI_SECURITY_WEP_64) 
            {
-                PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "64" );
+                PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "64" );
                 CcspWifiEventTrace(("RDK_LOG_NOTICE, Wifi security mode WEP-64 is Enabled\n"));
                 CcspWifiTrace(("RDK_LOG_WARN, RDKB_WIFI_CONFIG_CHANGED : Wifi security mode WEP-64 is Enabled\n"));
             } else if (pCfg->ModeEnabled == COSA_DML_WIFI_SECURITY_WEP_128)
             {
-                PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "128" );
+                PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "128" );
                 CcspWifiEventTrace(("RDK_LOG_NOTICE, Wifi security mode WEP-128 is Enabled\n"));
                 CcspWifiTrace(("RDK_LOG_WARN,RDKB_WIFI_CONFIG_CHANGED : Wifi security mode WEP-128 is Enabled\n"));
             }
@@ -20355,7 +20342,7 @@ CosaDmlWiFiApWpsSetCfg
     snprintf(recName, sizeof(recName) - 1, WpsPushButton, wlanIndex+1);
     snprintf(strValue, sizeof(strValue) - 1,"%d", pCfg->WpsPushButton);
     CcspWifiTrace(("RDK_LOG_INFO, %s: Setting %s to %d(%s)\n", __FUNCTION__, recName, pCfg->WpsPushButton, strValue));
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
           wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting %s \n",__FUNCTION__, retPsmSet, recName);
     }
@@ -20426,7 +20413,7 @@ wifiDbgPrintf("%s\n",__FUNCTION__);
         snprintf(recName, sizeof(recName) - 1, WpsPushButton, wlanIndex+1);
         snprintf(strValue, sizeof(strValue) - 1,"%d", pCfg->WpsPushButton);
         printf("%s: Setting %s to %d(%s)\n", __FUNCTION__, recName, pCfg->WpsPushButton, strValue);
-        retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting %s \n",__FUNCTION__, retPsmSet, recName); 
         }
@@ -20514,7 +20501,7 @@ ANSC_STATUS
     }
 
     snprintf(recName, sizeof(recName), WpsPushButton, wlanIndex+1);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         pCfg->WpsPushButton = atoi(strValue);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -20554,7 +20541,7 @@ ANSC_STATUS
 #endif
     if (!g_wifidb_rfc) {
         snprintf(recName, sizeof(recName), WpsPushButton, wlanIndex+1);
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
         if (retPsmGet == CCSP_SUCCESS) {
             pCfg->WpsPushButton = atoi(strValue);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -21069,13 +21056,13 @@ CosaDmlWiFiApMfSetCfg
     if ( pCfg->bEnabled == FALSE )
     {
 	wifi_setApMacAddressControlMode(wlanIndex, 0);
-        PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "0");
+        PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "0");
     } else if ( pCfg->FilterAsBlackList == FALSE ) {
 	wifi_setApMacAddressControlMode(wlanIndex, 1);
-        PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "1");
+        PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "1");
     } else if ( pCfg->FilterAsBlackList == TRUE ) {
 	wifi_setApMacAddressControlMode(wlanIndex, 2);
-        PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "2");
+        PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "2");
     }
 
     if (g_wifidb_rfc) {
@@ -21360,7 +21347,7 @@ CosaDmlWiFi_setDppVersion(ULONG apIns, ULONG version){
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), DppVersion, apIns);
 
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, value);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, value);
     if (retPsmSet == CCSP_SUCCESS) {
         return ANSC_STATUS_SUCCESS;
     }else{
@@ -21383,7 +21370,7 @@ CosaDmlWiFi_setDppReconfig(ULONG apIns,char* ParamName,char *value ){
         CcspTraceError(("%s:%d: Invalid Config: %s\n", __func__, __LINE__,recName));
         return ANSC_STATUS_FAILURE;
     }
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, value);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, value);
     if (retPsmSet == CCSP_SUCCESS) {
         return ANSC_STATUS_SUCCESS;
     }else{
@@ -21419,7 +21406,7 @@ CosaDmlWiFi_setDppValue(ULONG apIns, ULONG staIndex,char* ParamName,char *value 
         return ANSC_STATUS_FAILURE;
     }
 
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, value);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, value);
     if (retPsmSet == CCSP_SUCCESS) {
         return ANSC_STATUS_SUCCESS;
     }else{
@@ -21466,7 +21453,7 @@ void CosaDmlWifi_getDppConfigFromPSM(PANSC_HANDLE phContext){
         {
             ERR_CHK(rc);
         }
-        if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue)){
+        if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue)){
             pWifiDpp->Version = (UCHAR)_ansc_atoi(strValue);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
         }else{
@@ -21478,7 +21465,7 @@ void CosaDmlWifi_getDppConfigFromPSM(PANSC_HANDLE phContext){
         {
             ERR_CHK(rc);
         }
-        if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue)){
+        if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue)){
             rc = strcpy_s(pWifiDpp->Recfg.PrivateSigningKey, sizeof(pWifiDpp->Recfg.PrivateSigningKey) , strValue);
             ERR_CHK(rc);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -21489,7 +21476,7 @@ void CosaDmlWifi_getDppConfigFromPSM(PANSC_HANDLE phContext){
         {
             ERR_CHK(rc);
         }
-        if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue)){
+        if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue)){
             rc = strcpy_s(pWifiDpp->Recfg.PrivateReconfigAccessKey, sizeof(pWifiDpp->Recfg.PrivateReconfigAccessKey) , strValue);
             ERR_CHK(rc);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -21508,7 +21495,7 @@ void CosaDmlWifi_getDppConfigFromPSM(PANSC_HANDLE phContext){
             {
                 ERR_CHK(rc);
             }
-            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue)){
+            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue)){
                 rc = strcpy_s(pWifiDppSta->ClientMac, sizeof(pWifiDppSta->ClientMac) , strValue);
                 ERR_CHK(rc);
                 ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -21522,7 +21509,7 @@ void CosaDmlWifi_getDppConfigFromPSM(PANSC_HANDLE phContext){
             {
                 ERR_CHK(rc);
             }
-            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue)){
+            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue)){
                 rc = strcpy_s(pWifiDppSta->InitiatorBootstrapSubjectPublicKeyInfo, sizeof(pWifiDppSta->InitiatorBootstrapSubjectPublicKeyInfo) , strValue);
                 ERR_CHK(rc);
                 ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -21533,7 +21520,7 @@ void CosaDmlWifi_getDppConfigFromPSM(PANSC_HANDLE phContext){
             {
                 ERR_CHK(rc);
             }
-            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue)){
+            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue)){
                 rc = strcpy_s(pWifiDppSta->ResponderBootstrapSubjectPublicKeyInfo, sizeof(pWifiDppSta->ResponderBootstrapSubjectPublicKeyInfo) , strValue);
                 ERR_CHK(rc);
                 ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -21544,7 +21531,7 @@ void CosaDmlWifi_getDppConfigFromPSM(PANSC_HANDLE phContext){
             {
                 ERR_CHK(rc);
             }
-            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue)){
+            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue)){
                 CosaDmlWiFi_StringToChannelsList(strValue, pWifiDppSta);
                 ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
             }
@@ -21554,7 +21541,7 @@ void CosaDmlWifi_getDppConfigFromPSM(PANSC_HANDLE phContext){
             {
                 ERR_CHK(rc);
             }
-            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue)){
+            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue)){
                 pWifiDppSta->MaxRetryCount = _ansc_atoi(strValue);
                 ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
             }
@@ -21567,7 +21554,7 @@ void CosaDmlWifi_getDppConfigFromPSM(PANSC_HANDLE phContext){
             {
                 ERR_CHK(rc);
             }
-            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue)){
+            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue)){
                  rc = strcpy_s((char*)pWifiDppSta->ActivationStatus, sizeof(pWifiDppSta->ActivationStatus) , strValue);
                  ERR_CHK(rc);
                  ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -21578,7 +21565,7 @@ void CosaDmlWifi_getDppConfigFromPSM(PANSC_HANDLE phContext){
             {
                 ERR_CHK(rc);
             }
-            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue)){
+            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue)){
                 rc = strcpy_s((char*)pWifiDppSta->EnrolleeResponderStatus, sizeof(pWifiDppSta->EnrolleeResponderStatus) , strValue);
                 ERR_CHK(rc);
                 ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -21589,7 +21576,7 @@ void CosaDmlWifi_getDppConfigFromPSM(PANSC_HANDLE phContext){
             {
                 ERR_CHK(rc);
             }
-            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue)){
+            if(CCSP_SUCCESS == PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue)){
                 rc = strcpy_s((char*)pWifiDppSta->Cred.KeyManagement, sizeof(pWifiDppSta->Cred.KeyManagement) , strValue);
                 ERR_CHK(rc);
                 ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -21663,7 +21650,7 @@ ANSC_STATUS CosaDmlMacFilt_PSMSync(ULONG apIns, ULONG count)
 
                      snprintf(recName, sizeof(recName), MacFilter, apIns, i+1);
 
-                     retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, macArray[i]);
+                     retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, macArray[i]);
 
                      if (retPsmSet != CCSP_SUCCESS) {
                              wifiDbgPrintf("%s Error %d adding mac = %s \n", __FUNCTION__, retPsmSet, macArray[i]);
@@ -21673,7 +21660,7 @@ ANSC_STATUS CosaDmlMacFilt_PSMSync(ULONG apIns, ULONG count)
                       {
                               memset(recName, 0, sizeof(recName));
                               snprintf(recName, sizeof(recName), MacFilterDevice, apIns, i+1);
-                              retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, devArray[i]);
+                              retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, devArray[i]);
                               if (retPsmSet != CCSP_SUCCESS) {
                                        wifiDbgPrintf("%s Error %d adding mac device name = %s \n", __FUNCTION__, retPsmSet, devArray[i]);
                                        CcspWifiTrace(("RDK_LOG_ERROR,%s : %d adding mac device name = %s \n",__FUNCTION__, retPsmSet, devArray[i]));
@@ -21744,7 +21731,7 @@ wifiDbgPrintf("%s apIns = %lu\n",__FUNCTION__, apIns);
 
         macFilterList[strlen(macFilterList) - 1] = '\0';
 
-        retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, macFilterList);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, macFilterList);
 
         if (retPsmSet != CCSP_SUCCESS)
         {
@@ -21755,7 +21742,7 @@ wifiDbgPrintf("%s apIns = %lu\n",__FUNCTION__, apIns);
     else
 #endif
     {
-         retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+         retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
          if (retPsmGet == CCSP_SUCCESS) {
 
                if (strlen(strValue) > 0) {
@@ -21779,7 +21766,7 @@ wifiDbgPrintf("%s apIns = %lu\n",__FUNCTION__, apIns);
              g_macFiltCnt[apIns-1] = 0;
 
             // Init to empty list on factory fresh
-            retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, macFilter);
+            retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, macFilter);
             if (retPsmSet != CCSP_SUCCESS) {
                wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting recName %s\n",__FUNCTION__, retPsmSet, recName);
             }
@@ -21812,7 +21799,7 @@ wifiDbgPrintf("%s\n",__FUNCTION__);
     {
         ERR_CHK(rc);
     }
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
 		if ((macFilterList = strstr(strValue, ":" ))) {
 			macFilterList += 1;
@@ -21862,7 +21849,7 @@ wifiDbgPrintf("%s\n",__FUNCTION__);
 
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), MacFilter, apIns, pMacFilt->InstanceNumber);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &devMac);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &devMac);
     if (retPsmGet == CCSP_SUCCESS) {
         rc = sprintf_s(pMacFilt->MACAddress, sizeof(pMacFilt->MACAddress) ,"%s",devMac);
         if(rc < EOK)
@@ -21882,7 +21869,7 @@ wifiDbgPrintf("%s\n",__FUNCTION__);
         ERR_CHK(rc);
     }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &devName);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &devName);
     if (retPsmGet == CCSP_SUCCESS) {
         rc = strcpy_s(pMacFilt->DeviceName, sizeof(pMacFilt->DeviceName) ,devName);
         ERR_CHK(rc);
@@ -21891,7 +21878,7 @@ wifiDbgPrintf("%s\n",__FUNCTION__);
 
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), MacFilterDescription, apIns, pMacFilt->InstanceNumber);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle, g_Subsystem, recName, NULL, &devName);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &devName);
     if (retPsmGet == CCSP_SUCCESS) {
 	sprintf(pMacFilt->Description, "%s",devName);
 	((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(devName);
@@ -21974,7 +21961,7 @@ wifiDbgPrintf("%s\n",__FUNCTION__);
     // Add Mac to Non-Vol PSM
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), MacFilter, apIns, pMacFilt->InstanceNumber);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, pMacFilt->MACAddress);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, pMacFilt->MACAddress);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s Error %d adding mac = %s \n", __FUNCTION__, retPsmSet, pMacFilt->MACAddress);
 	CcspWifiTrace(("RDK_LOG_ERROR,%s : %d adding mac = %s\n",__FUNCTION__, retPsmSet, pMacFilt->MACAddress));
@@ -21985,7 +21972,7 @@ wifiDbgPrintf("%s\n",__FUNCTION__);
     // Add Mac to Non-Vol PSM
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), MacFilterDevice, apIns, pMacFilt->InstanceNumber);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, pMacFilt->DeviceName);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, pMacFilt->DeviceName);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s Error %d adding mac device name = %s \n", __FUNCTION__, retPsmSet, pMacFilt->DeviceName);
 	CcspWifiTrace(("RDK_LOG_ERROR,%s : %d adding mac device name = %s \n",__FUNCTION__, retPsmSet, pMacFilt->DeviceName));
@@ -22008,7 +21995,7 @@ wifiDbgPrintf("%s\n",__FUNCTION__);
     // Add Description to Non-Vol PSM
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), MacFilterDescription, apIns, pMacFilt->InstanceNumber);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle, g_Subsystem, recName, ccsp_string, pMacFilt->Description);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, pMacFilt->Description);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s Error %d adding mac device Description = %s \n", __FUNCTION__, retPsmSet, pMacFilt->Description);
 	CcspWifiTrace(("RDK_LOG_ERROR,%s : %d adding mac device Description = %s \n",__FUNCTION__, retPsmSet, pMacFilt->Description));
@@ -22019,7 +22006,7 @@ wifiDbgPrintf("%s\n",__FUNCTION__);
     memset(macFilterList, 0, sizeof(macFilterList));
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), MacFilterList, apIns);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
 		char tmpMacFilterList[512] = { 0 };
         int numFilters = 0;
@@ -22063,7 +22050,7 @@ wifiDbgPrintf("%s\n",__FUNCTION__);
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), MacFilterList, apIns);
 	CcspWifiTrace(("RDK_LOG_INFO,%s: <MF-PSMSet> MacFilterList %s \n",__FUNCTION__,macFilterList ));
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, macFilterList);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, macFilterList);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s PSM error adding MacFilterList  mac %d \n", __FUNCTION__, retPsmSet);
 	CcspWifiTrace(("RDK_LOG_ERROR,%s : PSM error adding MacFilterList  mac %d \n",__FUNCTION__, retPsmSet));
@@ -22104,7 +22091,7 @@ wifiDbgPrintf("%s apIns = %lu macFiltIns = %lu g_macFiltCnt = %d\n",__FUNCTION__
     // Add Mac to Non-Vol PSM
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), MacFilter, apIns, macFiltIns);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &macAddress);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &macAddress);
     if (retPsmGet == CCSP_SUCCESS) {	
 	//Note: Since wifi_kickApAclAssociatedDevices was getting called after wifi_delApAclDevice kick was not happening for the removed entry. 
 	//Hence calling kick before removing the entry.  
@@ -22152,7 +22139,7 @@ wifiDbgPrintf("%s apIns = %lu macFiltIns = %lu g_macFiltCnt = %d\n",__FUNCTION__
         // Remove from MacFilterList
 	memset(recName, 0, sizeof(recName));
 	snprintf(recName, sizeof(recName), MacFilterList, apIns);
-	retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &macFilterList);
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &macFilterList);
 	if (retPsmGet == CCSP_SUCCESS) {
 			char tmpMacFilterList[512] = { 0 };
             char inst[32];
@@ -22189,7 +22176,7 @@ wifiDbgPrintf("%s apIns = %lu macFiltIns = %lu g_macFiltCnt = %d\n",__FUNCTION__
                     char newMacList[256];
 		    snprintf(newMacList, sizeof(newMacList)-1, "%d%s",g_macFiltCnt[apIns-1],mac);
 			CcspWifiTrace(("RDK_LOG_INFO,%s: <MF-PSMSet> MacFilterList %s \n",__FUNCTION__,newMacList ));
-	            retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, newMacList);
+	            retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, newMacList);
 		    if (retPsmSet != CCSP_SUCCESS) {
 			wifiDbgPrintf("%s PSM error %d while setting MacFilterList %s \n", __FUNCTION__, retPsmSet, newMacList);
 			CcspWifiTrace(("RDK_LOG_ERROR,%s : PSM error %d while setting MacFilterList %s \n",__FUNCTION__, retPsmSet, newMacList));
@@ -22223,7 +22210,7 @@ wifiDbgPrintf("%s\n",__FUNCTION__);
     memset(recName, 0, sizeof(recName));
 
     sprintf(recName,MacFilter,apIns, pMacFilt->InstanceNumber);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &devMac);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &devMac);
     if(retPsmGet == CCSP_SUCCESS)
     {
         sprintf(pMacFilt->MACAddress,"%s",devMac);
@@ -22255,7 +22242,7 @@ CosaDmlMacFilt_SetConf(ULONG apIns, ULONG macFiltIns, PCOSA_DML_WIFI_AP_MAC_FILT
     if (g_wifidb_rfc)
     {
         //Remove the older mac entry from db if we are updating on same macfilter instance
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &oldDevMac);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &oldDevMac);
         if (retPsmGet == CCSP_SUCCESS) {
             if (wifidb_del_wifi_macfilter_config((unsigned int)apIns-1, oldDevMac) < 0)
             {
@@ -22268,7 +22255,7 @@ CosaDmlMacFilt_SetConf(ULONG apIns, ULONG macFiltIns, PCOSA_DML_WIFI_AP_MAC_FILT
         }
     }
 
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, pMacFilt->MACAddress);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, pMacFilt->MACAddress);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s Error %d adding mac = %s \n", __FUNCTION__, retPsmSet, pMacFilt->MACAddress);
 	CcspWifiTrace(("RDK_LOG_ERROR,%s :adding mac = %s\n",__FUNCTION__, pMacFilt->MACAddress));
@@ -22282,7 +22269,7 @@ CosaDmlMacFilt_SetConf(ULONG apIns, ULONG macFiltIns, PCOSA_DML_WIFI_AP_MAC_FILT
     {
         ERR_CHK(rc);
     }
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, pMacFilt->DeviceName);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, pMacFilt->DeviceName);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s Error %d adding mac device name = %s \n", __FUNCTION__, retPsmSet, pMacFilt->DeviceName);
 	CcspWifiTrace(("RDK_LOG_ERROR,%s :adding mac device name = %s \n",__FUNCTION__, pMacFilt->DeviceName));
@@ -22292,7 +22279,7 @@ CosaDmlMacFilt_SetConf(ULONG apIns, ULONG macFiltIns, PCOSA_DML_WIFI_AP_MAC_FILT
     // Add MacFilterDescription to Non-Vol PSM
     memset(recName, 0, sizeof(recName));
     snprintf(recName, sizeof(recName), MacFilterDescription, apIns, pMacFilt->InstanceNumber);
-    retPsmSet = PSM_Set_Record_Value2(bus_handle, g_Subsystem, recName, ccsp_string, pMacFilt->Description);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, pMacFilt->Description);
     if (retPsmSet != CCSP_SUCCESS) {
 	wifiDbgPrintf("%s Error %d adding mac device Description = %s \n", __FUNCTION__, retPsmSet, pMacFilt->Description);
 	CcspWifiTrace(("RDK_LOG_ERROR,%s :adding mac device Description = %s \n",__FUNCTION__, pMacFilt->Description));
@@ -22342,7 +22329,7 @@ ANSC_STATUS CosaDmlWifi_setBSSTransitionActivated(PCOSA_DML_WIFI_AP_CFG pCfg, UL
     {
       snprintf(strValue,sizeof(strValue),"%s","false");
     }
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue); 
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue); 
 
     if (retPsmSet != CCSP_SUCCESS) {
         CcspTraceWarning(("%s: PSM_Set_Record_Value2 returned error %d\n",__FUNCTION__, retPsmSet));
@@ -22557,7 +22544,7 @@ CosaDmlWiFi_setRadio_X_RDK_OffChannelTscan(INT radioIndex, UINT X_RDK_OffChannel
     char strValue[16]={0};
     snprintf(strValue, sizeof(strValue), "%d", ((int) (X_RDK_OffChannelTscan)) );
 
-    if (PSM_Set_Record_Value2(bus_handle, g_Subsystem, setRadio_X_RDK_OffChannelTscan, ccsp_string, strValue) != CCSP_SUCCESS)
+    if (PSM_Set_Record_Value2(bus_handle, NULL, setRadio_X_RDK_OffChannelTscan, ccsp_string, strValue) != CCSP_SUCCESS)
     {
         CcspTraceError(("%s PSM_Set_Record_Value2 returns err\n", __func__));
         return ANSC_STATUS_FAILURE;
@@ -22588,7 +22575,7 @@ CosaDmlWiFi_setRadio_X_RDK_OffChannelNscan(INT radioIndex, UINT X_RDK_OffChannel
     char strValue[16]={0};
     snprintf(strValue, sizeof(strValue), "%d", ((int) (X_RDK_OffChannelNscan)) );
 
-    if (PSM_Set_Record_Value2(bus_handle, g_Subsystem, setRadio_X_RDK_OffChannelNscan, ccsp_string, strValue) != CCSP_SUCCESS)
+    if (PSM_Set_Record_Value2(bus_handle, NULL, setRadio_X_RDK_OffChannelNscan, ccsp_string, strValue) != CCSP_SUCCESS)
     {
         CcspTraceError(("%s PSM_Set_Record_Value2 returns err\n", __func__));
         return ANSC_STATUS_FAILURE;
@@ -22619,7 +22606,7 @@ CosaDmlWiFi_setRadio_X_RDK_OffChannelTidle(INT radioIndex, UINT X_RDK_OffChannel
     char strValue[16]={0};
     snprintf(strValue, sizeof(strValue), "%d", ((int) (X_RDK_OffChannelTidle)) );
 
-    if (PSM_Set_Record_Value2(bus_handle, g_Subsystem, setRadio_X_RDK_OffChannelTidle, ccsp_string, strValue) != CCSP_SUCCESS)
+    if (PSM_Set_Record_Value2(bus_handle, NULL, setRadio_X_RDK_OffChannelTidle, ccsp_string, strValue) != CCSP_SUCCESS)
     {
         CcspTraceError(("%s PSM_Set_Record_Value2 returns err\n", __func__));
         return ANSC_STATUS_FAILURE;
@@ -22655,7 +22642,7 @@ CosaDmlWiFi_getChanUtilThreshold(INT radioInstance, PUINT ChanUtilThreshold)
     {
         ERR_CHK(rc);
     }
-	retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
 	if (retPsmGet == CCSP_SUCCESS) {
         *ChanUtilThreshold =  _ansc_atoi(strValue);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -22687,7 +22674,7 @@ CosaDmlWiFi_getChanUtilSelfHealEnable(INT radioInstance, ULONG *enable) {
     {
         ERR_CHK(rc);
     }
-	retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+	retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
 	if (retPsmGet == CCSP_SUCCESS) {
         *enable =  _ansc_atoi(strValue);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -22722,7 +22709,7 @@ CosaDmlWiFi_setChanUtilThreshold(INT radioInstance, UINT ChanUtilThreshold)
     {
         ERR_CHK(rc);
     }
-       PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+       PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
 
     if (g_wifidb_rfc) {
         struct schema_Wifi_Radio_Config  *pcfg= NULL;
@@ -22759,7 +22746,7 @@ CosaDmlWiFi_setChanUtilSelfHealEnable(INT radioInstance, UINT enable) {
     {
         ERR_CHK(rc);
     }
-       PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+       PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
 
     if (g_wifidb_rfc) {
         struct schema_Wifi_Radio_Config  *pcfg= NULL;
@@ -22878,7 +22865,7 @@ CosaDmlWiFi_getRadioStatsRadioStatisticsMeasuringRate(INT radioInstanceNumber, I
         {
             ERR_CHK(rc);
         }
-	ret = PSM_Get_Record_Value2(bus_handle,g_Subsystem, record, NULL, &strValue);
+	ret = PSM_Get_Record_Value2(bus_handle, NULL, record, NULL, &strValue);
     if (ret != CCSP_SUCCESS) {
 		CcspWifiTrace(("RDK_LOG_ERROR,%s : get %s fail\n",__FUNCTION__, record));
 		return ANSC_STATUS_FAILURE;
@@ -22923,7 +22910,7 @@ CosaDmlWiFi_setRadioStatsRadioStatisticsMeasuringRate(INT radioInstanceNumber, I
     {
         ERR_CHK(rc);
     }
-	PSM_Set_Record_Value2(bus_handle,g_Subsystem, record, ccsp_string, verString);
+	PSM_Set_Record_Value2(bus_handle, NULL, record, ccsp_string, verString);
 
     if (g_wifidb_rfc) {
         struct schema_Wifi_Radio_Config  *pcfg= NULL;
@@ -22960,7 +22947,7 @@ CosaDmlWiFi_getRadioStatsRadioStatisticsMeasuringInterval(INT radioInstanceNumbe
         {
             ERR_CHK(rc);
         }
-	ret = PSM_Get_Record_Value2(bus_handle,g_Subsystem, record, NULL, &strValue);
+	ret = PSM_Get_Record_Value2(bus_handle, NULL, record, NULL, &strValue);
     if (ret != CCSP_SUCCESS) {
 		CcspWifiTrace(("RDK_LOG_ERROR,%s : get %s fail\n",__FUNCTION__, record));
 		return ANSC_STATUS_FAILURE;
@@ -23004,7 +22991,7 @@ CosaDmlWiFi_setRadioStatsRadioStatisticsMeasuringInterval(INT radioInstanceNumbe
     {
         ERR_CHK(rc);
     }
-	PSM_Set_Record_Value2(bus_handle,g_Subsystem, record, ccsp_string, verString);
+	PSM_Set_Record_Value2(bus_handle, NULL, record, ccsp_string, verString);
 
     if (g_wifidb_rfc) {
         struct schema_Wifi_Radio_Config  *pcfg= NULL;
@@ -23263,7 +23250,7 @@ CosaDmlWiFi_GetBandSteeringOptions(PCOSA_DML_WIFI_BANDSTEERING_OPTION  pBandStee
                     {
                         ERR_CHK(rc);
                     }
-                    retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, recName, NULL, &strValue );
+                    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue );
                     if ( CCSP_SUCCESS == retPsmGet )
                     {
                         mode |= _ansc_atoi( strValue );
@@ -23292,7 +23279,7 @@ CosaDmlWiFi_GetBandSteeringOptions(PCOSA_DML_WIFI_BANDSTEERING_OPTION  pBandStee
                             {
                                 ERR_CHK(rc);
                             }
-                			retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, recName, NULL, &strValue );
+                			retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue );
                 			if ( CCSP_SUCCESS == retPsmGet ) 
                    			{
                 				mode_24G = _ansc_atoi( strValue );
@@ -23318,7 +23305,7 @@ CosaDmlWiFi_GetBandSteeringOptions(PCOSA_DML_WIFI_BANDSTEERING_OPTION  pBandStee
                             {
                                 ERR_CHK(rc);
                             }
-                			retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, recName, NULL, &strValue );
+                			retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue );
                             if ( CCSP_SUCCESS == retPsmGet ) 
                             {
                                 mode_5G = _ansc_atoi( strValue );
@@ -23822,7 +23809,7 @@ CosaDmlWiFi_SetBandSteeringOptions(PCOSA_DML_WIFI_BANDSTEERING_OPTION  pBandStee
                     {
                         ERR_CHK(rc);
                     }
-                    retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, recName, NULL, &strValue );
+                    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue );
                     if ( CCSP_SUCCESS == retPsmGet ) 
                     {
                         mode |= _ansc_atoi( strValue );
@@ -23853,7 +23840,7 @@ CosaDmlWiFi_SetBandSteeringOptions(PCOSA_DML_WIFI_BANDSTEERING_OPTION  pBandStee
                         ERR_CHK(rc);
                     }
 
-		retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, recName, NULL, &strValue );
+		retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue );
 		if ( CCSP_SUCCESS == retPsmGet ) 
 		{
 			mode_24G = _ansc_atoi( strValue );
@@ -23880,7 +23867,7 @@ CosaDmlWiFi_SetBandSteeringOptions(PCOSA_DML_WIFI_BANDSTEERING_OPTION  pBandStee
         {
             ERR_CHK(rc);
         }
-		retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, recName, NULL, &strValue );
+		retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue );
 		if ( CCSP_SUCCESS == retPsmGet ) 
 		{
 			mode_5G = _ansc_atoi( strValue );
@@ -24492,7 +24479,7 @@ void Hotspot_APIsolation_Set(int apIns) {
     {
         ERR_CHK(rc);
     }
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         BOOL enable = atoi(strValue);
         wifi_setApIsolationEnable(apIns-1, enable);
@@ -24573,7 +24560,7 @@ This call gets instances of table and total count.
             {
                 ERR_CHK(rc);
             }
-			retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &macAddress);
+			retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &macAddress);
 			if (retPsmGet == CCSP_SUCCESS)
 			{
 
@@ -24746,7 +24733,7 @@ void Hotspot_MacFilter_AddEntry(char *mac)
                     ERR_CHK(rc);
                 }
 #endif
-                retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+                retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
                 if (retPsmGet == CCSP_SUCCESS && strValue != NULL) {
                     char strValue2[256];
 		    int rc = -1;
@@ -27258,19 +27245,19 @@ ANSC_STATUS CosaDmlWiFiSetApMacFilterPsmData(int wlanIndex, PCOSA_DML_WIFI_AP_MF
 
     if (wifiVapInfo->u.bss_info.mac_filter_enable == FALSE)
     {
-        PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "0");
+        PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "0");
         pCfg->bEnabled = FALSE;
         pCfg->FilterAsBlackList = FALSE;
     }
     else if ((wifiVapInfo->u.bss_info.mac_filter_enable == TRUE) && (wifiVapInfo->u.bss_info.mac_filter_mode != wifi_mac_filter_mode_black_list))
     {
-        PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "1");
+        PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "1");
         pCfg->bEnabled = TRUE;
         pCfg->FilterAsBlackList = FALSE;
     }
     else if ((wifiVapInfo->u.bss_info.mac_filter_enable == TRUE) && (wifiVapInfo->u.bss_info.mac_filter_mode == wifi_mac_filter_mode_black_list))
     {
-        PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, "2");
+        PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, "2");
         pCfg->bEnabled = TRUE;
         pCfg->FilterAsBlackList = TRUE;
     }
@@ -27820,7 +27807,7 @@ ANSC_STATUS getApPSMValues(UINT vapIndex, bool *isChanged)
     {
         ERR_CHK(rc);
     }
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         enabled = atoi(strValue);
         //Get the Value
@@ -27837,12 +27824,12 @@ ANSC_STATUS getApPSMValues(UINT vapIndex, bool *isChanged)
     {
         ERR_CHK(rc);
     }
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
           uIntValue = _ansc_atoi(strValue);
           if (uIntValue != wifiVapInfo->u.bss_info.bssMaxSta) {
               sprintf(strValue, "%d", wifiVapInfo->u.bss_info.bssMaxSta);
-              PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+              PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
           }
           ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
     }
@@ -27853,7 +27840,7 @@ ANSC_STATUS getApPSMValues(UINT vapIndex, bool *isChanged)
     {
         ERR_CHK(rc);
     }
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         enabled = _ansc_atoi(strValue);
 
@@ -27870,7 +27857,7 @@ ANSC_STATUS getApPSMValues(UINT vapIndex, bool *isChanged)
      {
          ERR_CHK(rc);
      } 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
      if (retPsmGet == CCSP_SUCCESS) {
          uIntValue = _ansc_atoi(strValue);
 
@@ -27899,7 +27886,7 @@ ANSC_STATUS getApPSMValues(UINT vapIndex, bool *isChanged)
      /*BSSTransitionActivated*/
      memset(recName, 0, sizeof(recName));
      snprintf(recName, sizeof(recName), BSSTransitionActivated, ulInstance);
-     retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+     retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
      if (retPsmGet == CCSP_SUCCESS) {
          if (((strcmp (strValue, "true") == 0)) || (strcmp (strValue, "TRUE") == 0)) {
              enabled = TRUE;
@@ -27917,7 +27904,7 @@ ANSC_STATUS getApPSMValues(UINT vapIndex, bool *isChanged)
      /*NeighborReportActivated*/
      memset(recName, 0, sizeof(recName));
      sprintf(recName, NeighborReportActivated, ulInstance);
-     retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+     retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
      if (retPsmGet == CCSP_SUCCESS) {
          if (((strcmp (strValue, "true") == 0)) || (strcmp (strValue, "TRUE") == 0)) {
              enabled = TRUE;
@@ -27935,7 +27922,7 @@ ANSC_STATUS getApPSMValues(UINT vapIndex, bool *isChanged)
      /*UAPSDEnable*/
      memset(recName, 0, sizeof(recName));
      sprintf(recName, UAPSDEnable, ulInstance);
-     retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+     retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
      if (retPsmGet == CCSP_SUCCESS) {
          enabled = _ansc_atoi(strValue);
          if (enabled != wifiVapInfo->u.bss_info.UAPSDEnabled) {
@@ -27948,7 +27935,7 @@ ANSC_STATUS getApPSMValues(UINT vapIndex, bool *isChanged)
      /*BeaconRateCtl*/
      memset(recName, 0, sizeof(recName));
      sprintf(recName, BeaconRateCtl, ulInstance);
-     retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+     retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
      if (retPsmGet == CCSP_SUCCESS) {
          if (!getBeaconRateFromString(strValue, &uIntValue)) {
              CcspWifiTrace(("RDK_LOG_ERROR, %s BeaconRate Parameter Invalid :%s\n", __FUNCTION__, strValue));
@@ -27991,7 +27978,7 @@ ANSC_STATUS getRadioPSMValues(UINT radioIndex, bool *isChanged)
     {
         ERR_CHK(rc);
     }
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
           uIntValue = _ansc_atoi(strValue);
           //Get the Value
@@ -28009,7 +27996,7 @@ ANSC_STATUS getRadioPSMValues(UINT radioIndex, bool *isChanged)
     {
         ERR_CHK(rc);
     }
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
           uIntValue = _ansc_atoi(strValue);
           //Get the Value
@@ -28027,7 +28014,7 @@ ANSC_STATUS getRadioPSMValues(UINT radioIndex, bool *isChanged)
     {
         ERR_CHK(rc);
     }
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
           uIntValue = _ansc_atoi(strValue);
           //Get the Value
@@ -28045,7 +28032,7 @@ ANSC_STATUS getRadioPSMValues(UINT radioIndex, bool *isChanged)
     {
         ERR_CHK(rc);
     }
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
           uIntValue = _ansc_atoi(strValue);
 
@@ -28066,7 +28053,7 @@ ANSC_STATUS getRadioPSMValues(UINT radioIndex, bool *isChanged)
     {
         ERR_CHK(rc);
     }
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
           uIntValue = _ansc_atoi(strValue);
           //Get the Value
@@ -28084,7 +28071,7 @@ ANSC_STATUS getRadioPSMValues(UINT radioIndex, bool *isChanged)
     {
         ERR_CHK(rc);
     }
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
           uIntValue = _ansc_atoi(strValue);
           //Get the Value
@@ -28291,7 +28278,7 @@ ANSC_STATUS rdkWifiConfigInit()
         CosaDmlWiFiFactoryReset();
         printf("%s: Called CosaDmlWiFiFactoryReset \n",__FUNCTION__);
         // Set to FALSE after FactoryReset has been applied
-        PSM_Set_Record_Value2(bus_handle,g_Subsystem, FactoryReset, ccsp_string, "0");
+        PSM_Set_Record_Value2(bus_handle, NULL, FactoryReset, ccsp_string, "0");
         ovsdb_cleanup();
         printf("%s: Reset FactoryReset to 0 \n",__FUNCTION__);
         g_wifidb_update_pending = TRUE;
@@ -28301,7 +28288,7 @@ ANSC_STATUS rdkWifiConfigInit()
         wifi_db_dbg_print(1,"%s:%d: Start OVSDB factoryResetFlag  : %d\n", __func__, __LINE__, factoryResetFlag);
         start_ovsdb();
         init_ovsdb_tables();
-        retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-PSM-DB.Enable", NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-PSM-DB.Enable", NULL, &strValue);
         if (retPsmGet == CCSP_SUCCESS) {
             g_wifidb_rfc = _ansc_atoi(strValue);
             ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -30351,7 +30338,7 @@ ANSC_STATUS CosaDmlWiFi_getInterworkingElement(PCOSA_DML_WIFI_AP_CFG pCfg, ULONG
 
     //Check RFC status. In case of failure or disabled, set default value and exit.
     snprintf(recName, sizeof(recName), "%s" ,InterworkingRFCEnable);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
     if ((retPsmGet != CCSP_SUCCESS) || (strValue == NULL) || (!atoi(strValue))) 
     {
         if(strValue) {
@@ -30866,7 +30853,7 @@ static ANSC_STATUS getPMKCaching (int index, BOOLEAN *pmkEnable)
 
     snprintf(recName, sizeof(recName), PmkCaching, index+1);
 
-    retVal = PSM_Get_Record_Value2 (bus_handle, g_Subsystem, recName, NULL, &strValue);
+    retVal = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
 
     if (retVal != CCSP_SUCCESS)
     {
@@ -30888,7 +30875,7 @@ static ANSC_STATUS setPmkCachingintoPSM (int index, BOOLEAN pmkEnable)
 
     snprintf(recName, sizeof(recName), PmkCaching, index+1);
 
-    retVal = PSM_Set_Record_Value2 (bus_handle, g_Subsystem, recName, ccsp_string, pmkEnable ? "1" : "0");
+    retVal = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, pmkEnable ? "1" : "0");
 
     if (retVal != CCSP_SUCCESS)
     {
@@ -30906,7 +30893,7 @@ static void checkforbiddenSSID(int index)
     char *strValue  = NULL;
 
     wifi_getSSIDName(index, SSID);
-    retPsmGet = PSM_Get_Record_Value2( bus_handle, g_Subsystem, ReservedSSIDNames, NULL, &strValue );
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, ReservedSSIDNames, NULL, &strValue );
     if (retPsmGet == CCSP_SUCCESS)
     {
         if(isReservedSSID(strValue, SSID))
@@ -30929,7 +30916,7 @@ ANSC_STATUS getRadiusTransportInterface(int *radiusInterface)
     int retVal;
     char *strValue  = NULL;
 
-    retVal = PSM_Get_Record_Value2( bus_handle, g_Subsystem, TransportInterface, NULL, &strValue );
+    retVal = PSM_Get_Record_Value2(bus_handle, NULL, TransportInterface, NULL, &strValue );
     if (retVal == CCSP_SUCCESS)
     {
         *radiusInterface = _ansc_atoi(strValue);

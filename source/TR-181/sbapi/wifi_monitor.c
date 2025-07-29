@@ -78,7 +78,6 @@ static struct timeval csi_prune_timer;
 #endif
 
 extern void* bus_handle;
-extern char g_Subsystem[32];
 #define DEFAULT_CHANUTIL_LOG_INTERVAL 900
 #define SINGLE_CLIENT_WIFI_AVRO_FILENAME "WifiSingleClient.avsc"
 #define MIN_MAC_LEN 12
@@ -306,7 +305,7 @@ void write_to_file(const char *file_name, char *fmt, ...)
 BOOL check_ErrorsReceivedRFC_enabled() {
     char *ErrorsReceivedRFC = "DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.ErrorsReceived.Enable", *strValue = NULL;
     BOOL enable = FALSE;
-    if (PSM_Get_Record_Value2(bus_handle, g_Subsystem, ErrorsReceivedRFC, NULL, &strValue) != CCSP_SUCCESS)
+    if (PSM_Get_Record_Value2(bus_handle, NULL, ErrorsReceivedRFC, NULL, &strValue) != CCSP_SUCCESS)
     {
       CcspTraceError(("%s: fail to get PSM record for %s!\n", __FUNCTION__, ErrorsReceivedRFC));
     }
@@ -2024,8 +2023,7 @@ get_device_flag(char flag[], char *psmcli)
     char buf[CLIENT_STATS_MAX_LEN_BUF] = {0};
     char tempBuf[8] = {0}, tempPsmBuf[64] = {0};
     bool isPsmsetneeded =  false;
-    retPsmGet = PSM_Get_Record_Value2(bus_handle, g_Subsystem,
-            psmcli, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, psmcli, NULL, &strValue);
     errno_t rc = -1;
 
     if (retPsmGet == CCSP_SUCCESS)
@@ -2076,7 +2074,7 @@ get_device_flag(char flag[], char *psmcli)
             if(isPsmsetneeded)
             {
                 tempPsmBuf[strlen(tempPsmBuf) - 1] = '\0';
-                PSM_Set_Record_Value2(bus_handle,g_Subsystem, psmcli, ccsp_string, tempPsmBuf);
+                PSM_Set_Record_Value2(bus_handle, NULL, psmcli, ccsp_string, tempPsmBuf);
             }
         }
     }
@@ -2204,7 +2202,7 @@ static void  upload_client_debug_stats_transmit_power_stats(INT apIndex)
                 {
                     ERR_CHK(rc);
                 }
-                retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue);
+                retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue);
                 if (retPsmGet == CCSP_SUCCESS) {
                     int transPower = atoi(strValue);
                     txpwr_pcntg = (ULONG)transPower;
@@ -2840,7 +2838,7 @@ int  update_Off_Channel_5g_Scan_Params()
     for (i = 0; i < RADIO_OFF_CHANNEL_NO_OF_PARAMS; i ++)
     {
 
-        retPsmGet = PSM_Get_Record_Value2(bus_handle, g_Subsystem, Off_Channel_5g_params[i], NULL, &strValue);
+        retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, Off_Channel_5g_params[i], NULL, &strValue);
         // if we get value from PSMDB successfully, update it to current values array
         // if PSM DB value fetch is a failed operation, update the current array with default values
 
@@ -2989,7 +2987,7 @@ Off_Channel_5g_scanner(void *arg)
 
         get_formatted_time(tempBuf);
         snprintf(tmp, 256, "Device.WiFi.Radio.2.Radio_X_RDK_OffChannel_LastUpdatedTime");
-        PSM_Set_Record_Value2(bus_handle,g_Subsystem, tmp, ccsp_string, tempBuf);
+        PSM_Set_Record_Value2(bus_handle, NULL, tmp, ccsp_string, tempBuf);
         new_off_channel_scan_period = update_Off_Channel_5g_Scan_Params();
         if ((g_monitor_module.curr_off_channel_scan_period != new_off_channel_scan_period) && (new_off_channel_scan_period != 0)) {
             scheduler_update_timer_task_interval(g_monitor_module.sched, g_monitor_module.off_channel_scan_id, new_off_channel_scan_period*1000);
@@ -3026,7 +3024,7 @@ Off_Channel_5g_scanner(void *arg)
         strValue = NULL;
     }
 #endif /* WIFI_HAL_VERSION_3 */
-    if (PSM_Get_Record_Value2(bus_handle, g_Subsystem, DFS_checker, NULL, &strValue) != CCSP_SUCCESS)
+    if (PSM_Get_Record_Value2(bus_handle, NULL, DFS_checker, NULL, &strValue) != CCSP_SUCCESS)
     {
         CcspTraceError(("%s: fail to get PSM record for %s!\n", __FUNCTION__, DFS_checker));
     }
@@ -3183,7 +3181,7 @@ Off_Channel_5g_scanner(void *arg)
 
     memset(tempBuf, 0, sizeof(tempBuf));
     snprintf(tempBuf, sizeof(tempBuf), "%d", (len - 1));
-    PSM_Set_Record_Value2(bus_handle,g_Subsystem, ChannelNChannels, ccsp_string, tempBuf);
+    PSM_Set_Record_Value2(bus_handle, NULL, ChannelNChannels, ccsp_string, tempBuf);
 
     // this is to put an entry in psm with value of timestamp in which the last occurence of the function was called
     memset(tmp, 0, sizeof(tmp));
@@ -3191,7 +3189,7 @@ Off_Channel_5g_scanner(void *arg)
 
     get_formatted_time(tempBuf);
     snprintf(tmp, 256, "Device.WiFi.Radio.2.Radio_X_RDK_OffChannel_LastUpdatedTime");
-    PSM_Set_Record_Value2(bus_handle,g_Subsystem, tmp, ccsp_string, tempBuf);
+    PSM_Set_Record_Value2(bus_handle, NULL, tmp, ccsp_string, tempBuf);
     new_off_channel_scan_period = update_Off_Channel_5g_Scan_Params();
     if ((g_monitor_module.curr_off_channel_scan_period != new_off_channel_scan_period) && (new_off_channel_scan_period != 0)) {
         scheduler_update_timer_task_interval(g_monitor_module.sched, g_monitor_module.off_channel_scan_id, new_off_channel_scan_period*1000);
@@ -5673,7 +5671,7 @@ int get_chan_util_upload_period()
     int retPsmGet = CCSP_SUCCESS;
     char *strValue = NULL;
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle, g_Subsystem,"dmsb.device.deviceinfo.X_RDKCENTRAL-COM_WHIX.ChUtilityLogInterval",NULL,&strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "dmsb.device.deviceinfo.X_RDKCENTRAL-COM_WHIX.ChUtilityLogInterval", NULL, &strValue);
 
     if (retPsmGet == CCSP_SUCCESS)
     {
@@ -5698,7 +5696,7 @@ static int readLogInterval()
     char *strValue=NULL;
 
     wifi_dbg_print(1, "Entering %s:%d \n",__FUNCTION__,__LINE__);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle, g_Subsystem,"dmsb.device.deviceinfo.X_RDKCENTRAL-COM_WHIX.LogInterval",NULL,&strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "dmsb.device.deviceinfo.X_RDKCENTRAL-COM_WHIX.LogInterval", NULL, &strValue);
     
     if (retPsmGet == CCSP_SUCCESS)
     {

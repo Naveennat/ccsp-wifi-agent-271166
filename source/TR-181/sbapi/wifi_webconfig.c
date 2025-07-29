@@ -91,7 +91,6 @@ extern BOOL g_wifidb_rfc;
 webconf_apply_t apply_params;
 extern PCOSA_BACKEND_MANAGER_OBJECT g_pCosaBEManager;
 extern ANSC_HANDLE bus_handle;
-extern char   g_Subsystem[32];
 webconf_wifi_t *curr_config = NULL;
 extern COSA_DML_WIFI_SSID_CFG sWiFiDmlSsidStoredCfg[WIFI_INDEX_MAX];
 extern COSA_DML_WIFI_AP_FULL sWiFiDmlApStoredCfg[WIFI_INDEX_MAX];
@@ -1784,7 +1783,7 @@ int wifi_dml_update_config (wifi_vap_info_t *vap_cfg, uint8_t vap_index) {
     {
         ERR_CHK(rc);
     }
-    retPsmSet = PSM_Set_Record_Value2(bus_handle, g_Subsystem, recName, ccsp_string, pWifiAp->SEC.Cfg.MFPConfig);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, pWifiAp->SEC.Cfg.MFPConfig);
     if (retPsmSet != CCSP_SUCCESS) {
         CcspTraceError(("%s Failed to set MFPConfig  psm value\n",__FUNCTION__));
     }
@@ -3988,7 +3987,7 @@ int wifi_update_dml_config(wifi_vap_info_t *vap_cfg, wifi_vap_info_t *curr_cfg, 
         {
             ERR_CHK(rc);
         }
-        retPsmSet = PSM_Set_Record_Value2(bus_handle, g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             CcspTraceError(("%s Failed to set Isolation enable psm value\n",__FUNCTION__));
         }
@@ -4006,7 +4005,7 @@ int wifi_update_dml_config(wifi_vap_info_t *vap_cfg, wifi_vap_info_t *curr_cfg, 
         {
             ERR_CHK(rc);
         }
-        retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             CcspTraceError(("%s Failed to set Max station allowed psm value\n",__FUNCTION__));
         }
@@ -4024,7 +4023,7 @@ int wifi_update_dml_config(wifi_vap_info_t *vap_cfg, wifi_vap_info_t *curr_cfg, 
         {
             ERR_CHK(rc);
         }
-        retPsmSet = PSM_Set_Record_Value2(bus_handle, g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             CcspTraceError(("%s Failed to set Neighbor report activated psm value\n",__FUNCTION__));
         }
@@ -4042,7 +4041,7 @@ int wifi_update_dml_config(wifi_vap_info_t *vap_cfg, wifi_vap_info_t *curr_cfg, 
         {
             ERR_CHK(rc);
         }
-        retPsmSet = PSM_Set_Record_Value2(bus_handle, g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             CcspTraceError(("%s Failed to set Bss Transition activated psm value\n",__FUNCTION__));
         }
@@ -4061,7 +4060,7 @@ int wifi_update_dml_config(wifi_vap_info_t *vap_cfg, wifi_vap_info_t *curr_cfg, 
         {
             ERR_CHK(rc);
         }
-        retPsmSet = PSM_Set_Record_Value2(bus_handle, g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             CcspTraceError(("%s Failed to set Rapid Reconnect Enable psm value\n",__FUNCTION__));
         }
@@ -4079,7 +4078,7 @@ int wifi_update_dml_config(wifi_vap_info_t *vap_cfg, wifi_vap_info_t *curr_cfg, 
         {
             ERR_CHK(rc);
         }
-        retPsmSet = PSM_Set_Record_Value2(bus_handle, g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             CcspTraceError(("%s Failed to set Rapid Reconnection threshold psm value\n",__FUNCTION__));
         }
@@ -4097,7 +4096,7 @@ int wifi_update_dml_config(wifi_vap_info_t *vap_cfg, wifi_vap_info_t *curr_cfg, 
         {
             ERR_CHK(rc);
         }
-        retPsmSet = PSM_Set_Record_Value2(bus_handle, g_Subsystem, recName, ccsp_string, strValue);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
         if (retPsmSet != CCSP_SUCCESS) {
             CcspTraceError(("%s Failed to set Vap stats enable psm value\n",__FUNCTION__));
         }
@@ -4113,7 +4112,7 @@ int wifi_update_dml_config(wifi_vap_info_t *vap_cfg, wifi_vap_info_t *curr_cfg, 
         {
             ERR_CHK(rc);
         }
-        retPsmSet = PSM_Set_Record_Value2(bus_handle, g_Subsystem, recName, ccsp_string, pWifiAp->SEC.Cfg.MFPConfig);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, pWifiAp->SEC.Cfg.MFPConfig);
         if (retPsmSet != CCSP_SUCCESS) {
             CcspTraceError(("%s Failed to set MFPConfig  psm value\n",__FUNCTION__));
         }
@@ -4126,7 +4125,7 @@ int wifi_update_dml_config(wifi_vap_info_t *vap_cfg, wifi_vap_info_t *curr_cfg, 
         {
             ERR_CHK(rc);
         }
-        retPsmSet = PSM_Set_Record_Value2(bus_handle, g_Subsystem, recName, ccsp_string, vap_cfg->u.bss_info.security.mfpConfig);
+        retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, vap_cfg->u.bss_info.security.mfpConfig);
         if (retPsmSet != CCSP_SUCCESS) {
             CcspTraceError(("%s Failed to set MFPConfig  psm value\n",__FUNCTION__));
         }
@@ -4703,13 +4702,13 @@ int wifi_vapConfigSet(const char *buf, size_t len, pErr execRetVal)
     CcspTraceInfo(("%s:Msgpack to JSON success.\n", __FUNCTION__));
 
     //Fetch RFC values for Interworking and Passpoint
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Interworking.Enable", NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Interworking.Enable", NULL, &strValue);
     if ((retPsmGet == CCSP_SUCCESS) && (strValue)){
         g_interworking_RFC = _ansc_atoi(strValue);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
     }
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Passpoint.Enable", NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Passpoint.Enable", NULL, &strValue);
     if ((retPsmGet == CCSP_SUCCESS) && (strValue)){
         g_passpoint_RFC = _ansc_atoi(strValue);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -5692,7 +5691,7 @@ uint32_t getWiFiBlobVersion(char* subdoc)
 
     snprintf(buf,sizeof(buf), WiFiSsidVersion, subdoc);
 
-    retval = PSM_Get_Record_Value2(bus_handle,g_Subsystem, buf, NULL, &subdoc_ver);
+    retval = PSM_Get_Record_Value2(bus_handle, NULL, buf, NULL, &subdoc_ver);
     if ((retval == CCSP_SUCCESS) && (subdoc_ver))
     {
         version = strtoul(subdoc_ver, NULL, 10);
@@ -5719,7 +5718,7 @@ int setWiFiBlobVersion(char* subdoc,uint32_t version)
     snprintf(subdoc_ver,sizeof(subdoc_ver),"%u",version);
     snprintf(buf,sizeof(buf), WiFiSsidVersion,subdoc);
 
-    retval = PSM_Set_Record_Value2(bus_handle,g_Subsystem, buf, ccsp_string, subdoc_ver);
+    retval = PSM_Set_Record_Value2(bus_handle, NULL, buf, ccsp_string, subdoc_ver);
     if (retval == CCSP_SUCCESS) {
         CcspTraceInfo(("%s: Wifi Blob version applied to PSM DB Successfully\n", __FUNCTION__));
         return RETURN_OK;

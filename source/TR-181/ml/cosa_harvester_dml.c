@@ -80,7 +80,6 @@
 //#include "wifi_ovsdb.h"
 
 extern ANSC_HANDLE bus_handle;
-extern char g_Subsystem[32];
 
 extern void* g_pDslhDmlAgent;
 extern int gChannelSwitchingCount;
@@ -108,7 +107,7 @@ ANSC_STATUS GetNVRamULONGConfiguration(char* setting, ULONG* value)
     char *strValue = NULL;
     int retPsmGet = CCSP_SUCCESS;
 
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, setting, NULL, &strValue);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, setting, NULL, &strValue);
     if (retPsmGet == CCSP_SUCCESS) {
         *value = _ansc_atoi(strValue);
         ((CCSP_MESSAGE_BUS_INFO *)bus_handle)->freefunc(strValue);
@@ -127,7 +126,7 @@ ANSC_STATUS SetNVRamULONGConfiguration(char* setting, ULONG value)
     {
         ERR_CHK(rc);
     }
-    retPsmSet = PSM_Set_Record_Value2(bus_handle,g_Subsystem, setting, ccsp_string, psmValue);
+    retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, setting, ccsp_string, psmValue);
     return retPsmSet;
 }
 
@@ -190,7 +189,7 @@ CosaDmlHarvesterInit
     if (!g_wifidb_rfc) {
     rc = strcpy_s(recName, sizeof(recName), InstWifiClientMacAddress);
     ERR_CHK(rc);
-    retPsmGet = PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &macAddr);
+    retPsmGet = PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &macAddr);
     if ((retPsmGet == CCSP_SUCCESS) && (macAddr))
     {
         strncpy(pHarvester->MacAddress, macAddr, MIN_MAC_LEN);
@@ -618,7 +617,7 @@ WifiClient_Commit
     {
 	rc = strcpy_s(recName, sizeof(recName), InstWifiClientMacAddress);
 	ERR_CHK(rc);
-	PSM_Set_Record_Value2(bus_handle,g_Subsystem, recName, ccsp_string, pHarvester->MacAddress);
+	PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, pHarvester->MacAddress);
 
         pHarvester->bINSTClientMacAddressChanged = false;
 	CosaDmlWiFiClient_InstantMeasurementsMacAddress(pHarvester->MacAddress);
@@ -895,7 +894,7 @@ WifiClient_ActiveMeasurements_SetParamBoolValue
     char *recName = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WifiClient.ActiveMeasurements.Enable";
     char* strValue = NULL;
 
-    if (PSM_Get_Record_Value2(bus_handle,g_Subsystem, recName, NULL, &strValue) != CCSP_SUCCESS) {
+    if (PSM_Get_Record_Value2(bus_handle, NULL, recName, NULL, &strValue) != CCSP_SUCCESS) {
         AnscTraceWarning(("%s : fetching the PSM db failed for ActiveMsmt RFC\n", __func__));
     }
     else
