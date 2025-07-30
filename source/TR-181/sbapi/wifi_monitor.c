@@ -634,7 +634,7 @@ int upload_vap_rejection_sta_count_telemetry_cbr_time(INT apIndex)
     snprintf(cmd,sizeof(cmd),"journalctl |  grep 'BRCM-WIFI' |grep 'denied association due to max' | grep -v '\\[' | grep 'wl%d' | tail -1 | awk '{print $1,$2,$3,$4}'",apIndex);
     char buff[24] = {0};
     FILE* pipe = NULL;
-    pipe = (FILE*)(long int)v_secure_popen("r",cmd);
+    pipe = v_secure_popen("r",cmd);
     if(pipe == NULL)
     {
         wifi_dbg_print(1,"Pipe opening has failed in %s\n",__FUNCTION__);
@@ -754,7 +754,7 @@ int upload_vap_rejection_sta_count_telemetry_cbr(INT apIndex)
         return RETURN_ERR;
     }
     FILE* pipe = NULL;
-    pipe =(FILE*)(long int) v_secure_popen("r",cmd);
+    pipe = v_secure_popen("r",cmd);
     if(pipe == NULL)
     {
         wifi_dbg_print(1,"Pipe opening has failed in %s\n",__FUNCTION__);
@@ -2311,7 +2311,7 @@ static void upload_client_debug_stats_sta_fa_info(INT apIndex, sta_data_t *sta)
     
     memset (buf, 0, CLIENT_STATS_MAX_LEN_BUF);
     if (sta != NULL) {
-        fp = (FILE *)(long int)v_secure_popen("r", "dmesg | grep FA_INFO_%s | tail -1", to_sta_key(sta->sta_mac, sta_key));
+        fp = v_secure_popen("r", "dmesg | grep FA_INFO_%s | tail -1", to_sta_key(sta->sta_mac, sta_key));
         if (fp) {
             fgets(buf, CLIENT_STATS_MAX_LEN_BUF, fp);
             v_secure_pclose(fp);
@@ -2386,7 +2386,7 @@ static void upload_client_debug_stats_sta_fa_lmac_data_stats(INT apIndex, sta_da
     memset (buf, 0, CLIENT_STATS_MAX_LEN_BUF);
 
     if (sta != NULL) {
-        fp = (FILE *)(long int)v_secure_popen("r", "dmesg | grep FA_LMAC_DATA_STATS_%s | tail -1", to_sta_key(sta->sta_mac, sta_key));
+        fp = v_secure_popen("r", "dmesg | grep FA_LMAC_DATA_STATS_%s | tail -1", to_sta_key(sta->sta_mac, sta_key));
         if (fp) {
             fgets(buf, CLIENT_STATS_MAX_LEN_BUF, fp);
             v_secure_pclose(fp);
@@ -2451,7 +2451,7 @@ static void upload_client_debug_stats_sta_fa_lmac_mgmt_stats(INT apIndex, sta_da
 
     memset (buf, 0, CLIENT_STATS_MAX_LEN_BUF);
     if(sta != NULL) {
-        fp = (FILE *)(long int)v_secure_popen("r", "dmesg | grep FA_LMAC_MGMT_STATS_%s | tail -1", to_sta_key(sta->sta_mac, sta_key));
+        fp = v_secure_popen("r", "dmesg | grep FA_LMAC_MGMT_STATS_%s | tail -1", to_sta_key(sta->sta_mac, sta_key));
         if (fp) {
             fgets(buf, CLIENT_STATS_MAX_LEN_BUF, fp);
             v_secure_pclose(fp);
@@ -2517,7 +2517,7 @@ static void upload_client_debug_stats_sta_vap_activity_stats(INT apIndex)
     if (0 == apIndex) {
 
         memset (buf, 0, CLIENT_STATS_MAX_LEN_BUF);
-        fp = (FILE *)(long int)v_secure_popen("r", "dmesg | grep VAP_ACTIVITY_ath0 | tail -1");
+        fp = v_secure_popen("r", "dmesg | grep VAP_ACTIVITY_ath0 | tail -1");
         if (fp)
         {
             fgets(buf, CLIENT_STATS_MAX_LEN_BUF, fp);
@@ -2564,7 +2564,7 @@ static void upload_client_debug_stats_sta_vap_activity_stats(INT apIndex)
     if (1 == apIndex) {
         memset (buf, 0, CLIENT_STATS_MAX_LEN_BUF);
 
-        fp = (FILE *)(long int)v_secure_popen("r", "dmesg | grep VAP_ACTIVITY_ath1 | tail -1");
+        fp = v_secure_popen("r", "dmesg | grep VAP_ACTIVITY_ath1 | tail -1");
         if (fp)
         {
             fgets(buf, CLIENT_STATS_MAX_LEN_BUF, fp);
