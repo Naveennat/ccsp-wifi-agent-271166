@@ -18440,6 +18440,10 @@ CosaDmlWiFiApSecGetCfg
         CcspWifiTrace(("RDK_LOG_ERROR, %s Unable to get VAP info for wlanIndex:%d\n", __FUNCTION__, wlanIndex));
         return ANSC_STATUS_FAILURE;
     }
+
+    pCfg->RekeyingInterval = wifiVapInfo->u.bss_info.security.rekey_interval;
+    ccspWifiDbgPrint(CCSP_WIFI_TRACE, "%s get RekeyingInterval:%d info for wlanIndex:%d\n", __FUNCTION__,pCfg->RekeyingInterval, wlanIndex);
+
     for (seqCounter = 0; seqCounter < ARRAY_SZ(wifiSecMFPMap); seqCounter++)
     {
         if (wifiSecMFPMap[seqCounter].halSecMFP == wifiVapInfo->u.bss_info.security.mfp)
