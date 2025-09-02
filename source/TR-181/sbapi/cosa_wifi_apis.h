@@ -2797,6 +2797,7 @@ struct wifiGuardIntervalMap
 ANSC_STATUS wifiRadioSecondaryChannelUpdate(UINT radioIndex, wifi_radio_operationParam_t *pWifiRadioOperParam,UINT extensionChannel);
 ANSC_STATUS regDomainStrToEnum(char *pRegDomain, wifi_countrycode_type_t *pCountryCode);
 ANSC_STATUS guardIntervalDmlEnumtoHalEnum(UINT ccspGiEnum, wifi_guard_interval_t *halGiEnum);
+ANSC_STATUS guardIntervalHalEnumtoDmlEnum(wifi_guard_interval_t halGiEnum,COSA_DML_WIFI_GUARD_INTVL *ccspGiEnum);
 
 #ifdef WIFI_HAL_VERSION_3
 

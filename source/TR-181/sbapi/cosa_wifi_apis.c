@@ -5071,8 +5071,16 @@ CosaDmlWiFiSetRadioPsmData
     /*guardInterval*/
     memset(recName, '\0', sizeof(recName));
     memset(strValue, '\0', sizeof(strValue));
-    snprintf(recName, sizeof(recName), GuardInterval, ulInstance);
+#ifdef WIFI7_SUPPORT
+    COSA_DML_WIFI_GUARD_INTVL cosaVal;
+    if (guardIntervalHalEnumtoDmlEnum(wifiRadioOperParam->guardInterval, &cosaVal) == ANSC_STATUS_SUCCESS)
+    {
+          snprintf(strValue, sizeof(strValue), "%d", cosaVal);
+    }
+#else
     snprintf(strValue, sizeof(strValue), "%d", wifiRadioOperParam->guardInterval);
+#endif
+    snprintf(recName, sizeof(recName), GuardInterval, ulInstance);
     retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
           wifiDbgPrintf("%s PSM_Set_Record_Value2 returned error %d while setting Guard Interval \n",__FUNCTION__, retPsmSet);
@@ -31123,4 +31131,34 @@ BOOL CosaDmlWiFiRadioGetAutoChannelEnable(INT wlanIndex)
     BOOL enabled = 0;
     wifi_getRadioAutoChannelEnable(wlanIndex, &enabled);
     return enabled;
+}
+ANSC_STATUS guardIntervalHalEnumtoDmlEnum( wifi_guard_interval_t halGiEnum, COSA_DML_WIFI_GUARD_INTVL *ccspGiEnum)
+{
+    BOOL isGuardIntervalInvalid = TRUE;
+    UINT seqCounter = 0;
+
+    if (!ccspGiEnum) {
+        CcspWifiTrace(("RDK_LOG_ERROR, %s Invalid Argument\n", __FUNCTION__));
+        return ANSC_STATUS_FAILURE;
+    }
+
+    for (seqCounter = 0; seqCounter < ARRAY_SZ(wifiGuardIntervalMap); seqCounter++)
+    {
+        if (halGiEnum == wifiGuardIntervalMap[seqCounter].halGuardInterval)
+        {
+            *ccspGiEnum = wifiGuardIntervalMap[seqCounter].cosaGuardInterval;
+            isGuardIntervalInvalid = FALSE;
+            CcspWifiTrace(("RDK_LOG_INFO, %s: Matched halGiEnum=%d -> cosaGiEnum=%d (%s)\n",
+                              __FUNCTION__,halGiEnum,*ccspGiEnum,wifiGuardIntervalMap[seqCounter].wifiGuardIntervalType));
+            break;
+        }
+    }
+
+    if (isGuardIntervalInvalid)
+    {
+        CcspWifiTrace(("RDK_LOG_ERROR, %s Invalid halGiEnum=%d, no mapping found\n", __FUNCTION__,halGiEnum));
+        return ANSC_STATUS_FAILURE;
+    }
+
+   return ANSC_STATUS_SUCCESS;
 }
