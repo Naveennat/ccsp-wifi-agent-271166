@@ -26846,6 +26846,9 @@ ANSC_STATUS wifiRadioVapInfoValidation(UINT vapIndex, wifi_vap_info_t *pWifiVapI
         case wifi_security_key_type_pass:
         case wifi_security_key_type_sae:
         case wifi_security_key_type_psk_sae:
+        case wifi_security_key_type_saeext:
+        case wifi_security_key_type_sae_saeext:
+        case wifi_security_key_type_psk_sae_saeext:
             break;
         default:
             CcspWifiTrace(("RDK_LOG_ERROR, %s SSID Passphrase type %d is not valid for vapIndex = %d\n", __FUNCTION__,
