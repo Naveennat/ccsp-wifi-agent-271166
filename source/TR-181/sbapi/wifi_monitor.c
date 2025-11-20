@@ -3653,6 +3653,9 @@ void process_connect	(unsigned int ap_index, auth_deauth_dev_t *dev)
         wifi_dbg_print(1,"Func:%s Line:%d Device:%s created a new entry \n",__FUNCTION__,__LINE__,to_sta_key(dev->sta_mac, sta_key));
     }
     
+    if (sta->dev_stats.cli_Active != false)
+        return;
+
     sta->total_disconnected_time += sta->disconnected_time;
     sta->disconnected_time = 0;
     
