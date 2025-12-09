@@ -5071,15 +5071,12 @@ CosaDmlWiFiSetRadioPsmData
     /*guardInterval*/
     memset(recName, '\0', sizeof(recName));
     memset(strValue, '\0', sizeof(strValue));
-#ifdef WIFI7_SUPPORT
+
     COSA_DML_WIFI_GUARD_INTVL cosaVal;
     if (guardIntervalHalEnumtoDmlEnum(wifiRadioOperParam->guardInterval, &cosaVal) == ANSC_STATUS_SUCCESS)
     {
           snprintf(strValue, sizeof(strValue), "%d", cosaVal);
     }
-#else
-    snprintf(strValue, sizeof(strValue), "%d", wifiRadioOperParam->guardInterval);
-#endif
     snprintf(recName, sizeof(recName), GuardInterval, ulInstance);
     retPsmSet = PSM_Set_Record_Value2(bus_handle, NULL, recName, ccsp_string, strValue);
     if (retPsmSet != CCSP_SUCCESS) {
