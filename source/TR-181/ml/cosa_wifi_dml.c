@@ -81,6 +81,7 @@
 #include "wifi_monitor.h"
 #include "dslh_definitions_database.h"
 #include <sysevent/sysevent.h>
+#include <syscfg/syscfg.h>
 
 #if defined (FEATURE_SUPPORT_WEBCONFIG)
 #include "../sbapi/wifi_webconfig.h"
@@ -542,6 +543,14 @@ WiFi_GetParamBoolValue
         *pBool = pMyObject->bDFS;
         return TRUE;
     }
+
+#if defined (FEATURE_MLO_ENABLE)
+    if (strcmp(ParamName, "X_LGI-COM_MLOEnable") == 0)
+    {
+        *pBool = wifi_getMloEnable();
+        return TRUE;
+    }
+#endif
 
     return FALSE;
 }
@@ -1212,6 +1221,32 @@ WiFi_SetParamBoolValue
             return TRUE;
         }
     }
+
+#if defined (FEATURE_MLO_ENABLE)
+	if (strcmp(ParamName, "X_LGI-COM_MLOEnable") == 0)
+	{
+        BOOL enable = FALSE;
+
+        enable = wifi_getMloEnable();
+        if(enable == bValue)
+            return TRUE;
+
+        if(TRUE == bValue)
+        {
+            wifi_setMloEnable(TRUE);
+        }
+        else
+        {
+            wifi_setMloEnable(FALSE);
+        }
+
+        syscfg_set(NULL, "X_RDKCENTRAL-COM_LastRebootReason", "mlo-change");
+        syscfg_set_commit(NULL, "X_RDKCENTRAL-COM_LastRebootCounter", "1");
+        system("reboot"); /*for setting mlo, need to reboot gw*/
+
+        return TRUE;
+	}
+#endif
 
     return FALSE;
 }
