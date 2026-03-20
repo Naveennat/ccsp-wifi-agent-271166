@@ -4501,10 +4501,8 @@ CosaDmlWiFiSetDefaultApSecCfg
             }
 
             security.mode = wifi_security_mode_wpa2_personal;
-            security.u.key.type = wifi_security_key_type_psk_sae;
         }
     }
-    security.encr = wifi_encryption_aes;
 
     /* Copy the default password only when passphrase is empty */
     if (strnlen(security.u.key.key,sizeof(security.u.key.key)) == 0) {
