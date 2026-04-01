@@ -18777,21 +18777,33 @@ wifiDbgPrintf("%s pSsid = %s\n",__FUNCTION__, pSsid);
 #if defined(_LG_OFW_)
     if(wlanIndex == 6 || wlanIndex == 7) /*For Guest wifi SSIDs*/
     {
-        /*If KeyPassphrase is empty, set the KeyPassphrase same as DefaultKeyPassphrase for Guest wifi*/
-        if(strlen(pCfg->KeyPassphrase) == 0)
+/*If any of the KeyPassphrase is empty, then check both keypassphrase and if anyone is set then set other with same passphrase. If both are empty then set with default passphrase.*/
+    if(strlen(pCfg->KeyPassphrase) == 0)
+    {
+        wifi_getApSecurityKeyPassphrase(6, pCfg->KeyPassphrase);
+        if ( pCfg->KeyPassphrase[0] == 0 )
         {
-            wifi_getApSecurityKeyPassphrase(6, pCfg->KeyPassphrase);
-            if ( pCfg->KeyPassphrase[0] == 0 )
+            wifi_getApSecurityKeyPassphrase(7, pCfg->KeyPassphrase);
+            if ( pCfg->KeyPassphrase[0] == 0 && pCfg->DefaultKeyPassphrase[0] != 0)
             {
-                wifi_getApSecurityKeyPassphrase(7, pCfg->KeyPassphrase);
-                if ( pCfg->KeyPassphrase[0] == 0 && pCfg->DefaultKeyPassphrase[0] != 0)
-                {
-                    strcpy(pCfg->KeyPassphrase,pCfg->DefaultKeyPassphrase);
-                }
+                strcpy(pCfg->KeyPassphrase,pCfg->DefaultKeyPassphrase);
             }
         }
+        if( pCfg->KeyPassphrase[0] != 0 )
+        {
+
+            wifi_setApSecurityKeyPassphrase(6, (char*)pCfg->KeyPassphrase);
+            wifi_setApSecurityKeyPassphrase(7, (char*)pCfg->KeyPassphrase);
+            #ifdef WIFI_HAL_VERSION_3
+                  snprintf(wifiVapInfo->u.bss_info.security.u.key.key, sizeof(wifiVapInfo->u.bss_info.security.u.key.key), "%s", (char *) pCfg->KeyPassphrase);
+            #endif
+        #ifdef _LG_MV2_PLUS_
+           wifi_apply();
+        #endif
+        }
+    }	    
 #if defined(_LG_MV1_QCA_)
-        else if(access("/tmp/migration_to_mng", F_OK) == 0)
+        if(access("/tmp/migration_to_mng", F_OK) == 0)
         {
             UCHAR KeyPassphrase[64+1];
             wifi_getApSecurityKeyPassphrase(6, pCfg->KeyPassphrase);
@@ -18807,20 +18819,11 @@ wifiDbgPrintf("%s pSsid = %s\n",__FUNCTION__, pSsid);
             {
                  strcpy(pCfg->KeyPassphrase,pCfg->DefaultKeyPassphrase);
             }
-        }
-#endif
-        if( pCfg->KeyPassphrase[0] != 0 )
-        {
             wifi_setApSecurityKeyPassphrase(6, (char*)pCfg->KeyPassphrase);
             wifi_setApSecurityKeyPassphrase(7, (char*)pCfg->KeyPassphrase);
-#ifdef WIFI_HAL_VERSION_3
-            snprintf(wifiVapInfo->u.bss_info.security.u.key.key, sizeof(wifiVapInfo->u.bss_info.security.u.key.key), "%s", (char *) pCfg->KeyPassphrase);
-#endif
         }
-        #ifdef LG_MV2_PLUS
-        wifi_apply();
-        #endif
-    }
+#endif
+     }
 #endif
 
  //wifi_getApSecurityRadiusServerIPAddr(wlanIndex,&pCfg->RadiusServerIPAddr); //bug
