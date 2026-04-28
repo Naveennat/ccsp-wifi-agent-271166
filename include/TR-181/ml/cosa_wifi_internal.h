@@ -136,6 +136,10 @@ typedef struct {
 	unsigned char phyAddr[32]; /* Byte alignment*/
     int RSSI;
 	int Status;
+#ifdef FEATURE_MLO_ENABLE
+	unsigned char MLDMac[18];  /* MLD MAC address string  - MAC string format AA:BB:CC:DD:EE:FF is 17 chars + 1 null terminator.*/
+	bool MLDEnable;
+#endif
 }__attribute__((packed, aligned(1))) LM_wifi_host_t;
 
 typedef struct{

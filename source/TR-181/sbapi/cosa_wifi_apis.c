@@ -24916,6 +24916,44 @@ void Hotspot_Macfilter_sync(char *mac) {
 	Hotspot_MacFilter_AddEntry(mac);
 }
 
+#ifdef FEATURE_MLO_ENABLE
+static BOOL IsClientMLDEnabled(INT apIndex, unsigned char *client_mac,unsigned char *mld_mac_out)
+{
+    wifi_associated_dev3_t *assoc_array = NULL;
+    UINT array_size = 0;
+    UINT i;
+    INT ret;
+
+    ret = wifi_getApAssociatedDeviceDiagnosticResult3(apIndex,
+                                                      &assoc_array,
+                                                      &array_size);
+
+    if (ret != RETURN_OK || assoc_array == NULL)
+    {
+        CcspWifiTrace(("RDK_LOG_ERROR,Failed to get associated device DiagnosticResult for MLD clients\n"));
+        return FALSE;
+    }
+    for (i = 0; i < array_size; i++)
+    {
+         //.cli_MACAddress, is  type of a 6‑byte MAC array
+        if (memcmp(assoc_array[i].cli_MACAddress, client_mac, 6) == 0)   //mem comp since bytes compare the mac address with the list of address in the struct and return the mld enable only when match
+        {
+		CcspWifiTrace(("RDK_LOG_DEBUG,MLD MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
+        	assoc_array[i].cli_MLDAddr[0],
+        	assoc_array[i].cli_MLDAddr[1],
+        	assoc_array[i].cli_MLDAddr[2],
+        	assoc_array[i].cli_MLDAddr[3],
+        	assoc_array[i].cli_MLDAddr[4],
+        	assoc_array[i].cli_MLDAddr[5]));
+		memcpy(mld_mac_out, assoc_array[i].cli_MLDAddr, 6); // copy mld mac address 
+
+        	return assoc_array[i].cli_MLDEnable;
+        }
+    }
+    return FALSE;
+}
+#endif
+
 void *Wifi_Hosts_Sync_Func(void *pt, int index, wifi_associated_dev_t *associated_dev, BOOL bCallForFullSync, BOOL bCallFromDisConnCB )
 {
 
@@ -25157,8 +25195,25 @@ void *Wifi_Hosts_Sync_Func(void *pt, int index, wifi_associated_dev_t *associate
                                     ERR_CHK(rc);
                                     return NULL;
                                 }
-
-                                CcspWifiTrace(("RDK_LOG_WARN, Association event: send association event for %s\n", mac_id));
+#ifdef FEATURE_MLO_ENABLE
+				unsigned char mld_mac_bytes[6] = {0};
+				if(IsClientMLDEnabled(index-1, assoc_devices[j].MacAddress,mld_mac_bytes))   
+				{
+					CcspWifiTrace(("RDK_LOG_DEBUG, MLO is enabled  \n"));
+					hosts.host[0].MLDEnable = TRUE;
+					_ansc_snprintf((char*)hosts.host[0].MLDMac, sizeof(hosts.host[0].MLDMac),
+					"%02X:%02X:%02X:%02X:%02X:%02X",
+					mld_mac_bytes[0], mld_mac_bytes[1], mld_mac_bytes[2],
+					mld_mac_bytes[3], mld_mac_bytes[4], mld_mac_bytes[5]);
+					hosts.host[0].MLDMac[17] = '\0';
+				}
+				else
+				{
+					hosts.host[0].MLDMac[0] = '\0';
+					hosts.host[0].MLDEnable = FALSE;
+				}
+#endif
+				CcspWifiTrace(("RDK_LOG_WARN, Association event: send association event for %s\n", mac_id));
 
 				
 				CosaDMLWiFi_Send_ReceivedHostDetails_To_LMLite( &(hosts.host[0]) );
@@ -25380,7 +25435,16 @@ void CosaDMLWiFi_Send_ReceivedHostDetails_To_LMLite(LM_wifi_host_t   *phost)
 										('\0' != phost->ssid[ 0 ]) ? (char*)phost->ssid : "NULL",
 										phost->RSSI,
 										phost->Status);
-			
+#ifdef FEATURE_MLO_ENABLE
+			snprintf(str, sizeof(str), "%s,%s,%s,%d,%d,%d,%s",
+										(char*)phost->phyAddr,
+										('\0' != phost->AssociatedDevice[ 0 ]) ? (char*)phost->AssociatedDevice : "NULL",
+										('\0' != phost->ssid[ 0 ]) ? (char*)phost->ssid : "NULL",
+										phost->RSSI,
+										phost->Status
+										,phost->MLDEnable,
+										('\0' != phost->MLDMac[0]) ? (char*)phost->MLDMac : "NULL");
+#endif			
 			CcspWifiTrace(("RDK_LOG_WARN, %s-%d [%s] \n",__FUNCTION__,__LINE__,(char*)str));
 			
 			notif_val[0].parameterName	= param_name;
