@@ -24947,9 +24947,14 @@ static BOOL IsClientMLDEnabled(INT apIndex, unsigned char *client_mac,unsigned c
         	assoc_array[i].cli_MLDAddr[5]));
 		memcpy(mld_mac_out, assoc_array[i].cli_MLDAddr, 6); // copy mld mac address 
 
-        	return assoc_array[i].cli_MLDEnable;
+        	BOOL isClientMLDEnabled = assoc_array[i].cli_MLDEnable;
+        	free(assoc_array);
+        	return isClientMLDEnabled;
         }
     }
+
+    free(assoc_array);
+
     return FALSE;
 }
 #endif
