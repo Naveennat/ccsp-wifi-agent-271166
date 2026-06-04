@@ -18797,9 +18797,6 @@ wifiDbgPrintf("%s pSsid = %s\n",__FUNCTION__, pSsid);
             #ifdef WIFI_HAL_VERSION_3
                   snprintf(wifiVapInfo->u.bss_info.security.u.key.key, sizeof(wifiVapInfo->u.bss_info.security.u.key.key), "%s", (char *) pCfg->KeyPassphrase);
             #endif
-        #ifdef _LG_MV2_PLUS_
-           wifi_apply();
-        #endif
         }
     }	    
 #if defined(_LG_MV1_QCA_)
