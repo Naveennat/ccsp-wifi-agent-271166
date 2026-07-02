@@ -1828,6 +1828,18 @@ INSTMSMT_PH2 -->
                     </parameters>
                     <objects>
                         <object>
+                            <name>Private</name>
+                            <objectType>object</objectType>
+                            <parameters>
+                                <parameter>
+                                    <name>Enable</name>
+                                    <type>boolean</type>
+                                    <syntax>bool</syntax>
+                                    <writable>true</writable>
+                                </parameter>
+                            </parameters>
+                        </object>
+                        <object>
                             <name>Stats</name>
                             <objectType>object</objectType>
                             <functions>
