@@ -111,8 +111,9 @@
                 </parameter>
                 <parameter>
                     <name>Private</name>
-                    <type>string</type>
-                    <syntax>string</syntax>
+                    <type>boolean</type>
+                    <syntax>bool</syntax>
+                    <value>false</value>
                     <writable>true</writable>
                 </parameter>
                 <parameter>
